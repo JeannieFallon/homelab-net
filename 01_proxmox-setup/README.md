@@ -41,7 +41,7 @@ This procedure is divided into three logical stages based on the machine used:
 2. **Install Proxmox on NUC** (`02_nuc-install.md`)
    - With physical access to the Intel NUC, configure the BIOS, boot from the USB installer, and complete the Proxmox installation on the internal drive.
 
-3. **Access Web UI and Configure Hypervisor** (`03_web-ui-setup.md`)
+3. **Access Web UI and Configure Hypervisor** (`03_web-ui.md`)
    - From another machine on the same network, connect to the Proxmox web interface to verify the installation and complete initial configuration steps (e.g., storage, networking, subscription settings).
 
 ## Resources

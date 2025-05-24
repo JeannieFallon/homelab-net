@@ -1,0 +1,117 @@
+# Access the Proxmox Web Interface
+
+## Goal
+Connect to the Proxmox VE web interface from another device on the local network and confirm successful installation.
+
+## Requirements
+- Proxmox VE, successfully installed and powered on
+- A second machine (e.g., MacBook, laptop, or desktop) on the same local network
+- Web browser (Firefox recommended)
+- Proxmox server IP address (displayed on console after boot)
+
+## Procedure
+
+1. **Find the Proxmox IP Address**
+   On the Proxmox server’s console screen, look for the message:
+
+   ```
+   You can now connect to the Proxmox VE web interface: https://[PXMX_IP_ADDR]:8006
+   ```
+
+2. **Open the Web Interface**
+   On your client machine, open a browser and go to:
+
+   ```
+   https://[PXMX_IP_ADDR]:8006
+   ```
+
+3. **Bypass the SSL Warning**
+   Proxmox uses a self-signed certificate by default.
+       - In Firefox, click "Advanced" → "Accept the Risk and Continue"
+       - In Safari or Chrome, click "Show Details" → "Visit this website"
+
+4. **Log In**
+
+    Log in with the root user and the password you set during installation.
+        - **Note**: To log in as the `root` user, you must select the `Linux PAM` realm (`@pam`) from the login
+          dropdown. See [Appendix: Authentication in Proxmox VE](#appendix-authentication-in-proxmox-ve) for more
+          details.
+        - Disregard the warning that you do not have a valid subscription.
+
+5. **Proxmox Dashboard**
+    You should now see the Proxmox dashboard.
+
+## Troubleshooting
+
+If the web interface doesn't load, but the Proxmox server shows the IP address, try the following steps:
+
+
+1. Test basic connectivity:
+
+From your client machine, open a terminal and run:
+```bash
+ping [PXMX_IP_ADDR]
+```
+
+If the ping fails:
+- Make sure the client and Proxmox server are on the same subnet
+- Verify that the Ethernet cable is securely connected
+- Check your router's DHCP leases to confirm the NUC was assigned an IP
+- Try assigning a static IP and rebooting the system
+
+2. Use curl to test the HTTPS service:
+
+From the terminal on your client machine, run:
+```bash
+curl -k https://[PXMX_IP_ADDR]:8006
+```
+
+If curl pulls HTML content, then the Proxmox web service is working. The issue is likely browser-related.
+
+3. Check if the web service is running on the server:
+On the Proxmox console, run:
+```bash
+systemctl status pveproxy
+```
+
+If it’s not active, restart it using:
+```bash
+systemctl restart pveproxy
+```
+
+4. Local network access blocked by macOS or browser:
+- On macOS, navigate to *System Settings > Network > Privacy & Security > Local Network*
+    - Ensure Firefox (or your browser) is allowed to access the local network
+- If prompted by the browser, choose to allow access to devices on your local network
+
+5. Try a different browser:
+Firefox is recommended, as it's more permissive with self-signed certificates. Safari and Chrome are stricter and may
+cache certificate errors.
+
+## Resources
+
+- [Proxmox VE Web Interface Overview](https://pve.proxmox.com/wiki/Proxmox_VE_User_Interface)
+- [Proxmox VE Authentication Realms](https://pve.proxmox.com/wiki/User_Management#_authentication_realms)
+- [Proxmox VE User Management](https://pve.proxmox.com/wiki/User_Management)
+- [Proxmox VE Certificates and HTTPS Access](https://pve.proxmox.com/wiki/HTTPS_Certificate_Configuration)
+- [Proxmox VE System Requirements](https://pve.proxmox.com/wiki/System_Requirements)
+- [Proxmox Community Forum](https://forum.proxmox.com/) – useful for troubleshooting login or certificate issues
+
+## Appendix: Authentication in Proxmox VE
+
+When logging into the Proxmox web interface, you must choose an **authentication realm**. This determines how your
+credentials are verified. The following realms are available:
+
+- **Linux PAM (`@pam`)**
+  - Authenticates against the underlying Linux system (Debian)
+  - Uses accounts stored in `/etc/passwd` and `/etc/shadow`
+  - Recommended for administrative access via the `root` account
+  - Example login: `root@pam`
+
+- **Proxmox VE (`@pve`)**
+  - Authenticates users stored in Proxmox’s internal user database
+  - Supports fine-grained, role-based access control
+  - Recommended for non-root or restricted users
+  - Example login: `admin@pve`
+
+
