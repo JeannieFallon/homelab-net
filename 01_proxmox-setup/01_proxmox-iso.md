@@ -38,13 +38,21 @@ Download the latest Proxmox ISO and flash it to a USB drive using a Windows lapt
      - Device: Select your USB drive
      - Boot selection: Use the "SELECT" dropdown to choose the downloaded Proxmox ISO
         - **Note**: Rufus will enforce DD mode. Click OK:
-        ![Rufus ISO Selection](../res/screenshots/01_proxmox-iso_00.png)
+
+    <p align="center">
+      <img src="../res/screenshots/01_proxmox-iso_00.png" alt="Confirm DD mode" width="50%">
+    </p>
+           
      - Partition scheme: `MBR` (default)
         - **Note**: Although GPT is often used with UEFI, Proxmox ISO works with `MBR + UEFI` boot on most Intel NUCs.
           You can leave the default MBR setting in Rufus unless your system specifically requires GPT.
      - File system: `FAT32` (default)
-  - Confirmt the following options:
-        ![Rufus options](../res/screenshots/01_proxmox-iso_01.png)
+  - Confirm the following options:
+
+    <p align="center">
+      <img src="../res/screenshots/01_proxmox-iso_01.png" alt="Rufus ISO selection screen" width="50%">
+    </p>
+
    - Click **Start**. Confirm that all existing data on the drive will be erased.
 
 6. **Verify Completion**
