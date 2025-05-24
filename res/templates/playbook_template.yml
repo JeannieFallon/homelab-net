@@ -1,0 +1,26 @@
+---
+# Playbook Name: [describe what this playbook does]
+
+- name: [Short description of this playbook’s purpose]
+  hosts: [group or hostname]
+  become: true
+  gather_facts: true
+
+  vars:
+    # Example custom variable
+    example_var: "value"
+
+  pre_tasks:
+    - name: Ensure target is reachable
+      ping:
+
+  roles:
+    - role: [your_role_name]
+      vars:
+        [var_name]: [value]
+
+  post_tasks:
+    - name: Placeholder post-task
+      debug:
+        msg: "Playbook completed."
+
