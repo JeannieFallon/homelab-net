@@ -1,13 +1,40 @@
 # Ansible Control Node
 
 ## Goal
-Describe the objective of this step in 1–2 lines. What should be true when this step is completed?
+
+Provision a dedicated VM to serve as the Ansible control node. This machine will be used to automate the setup and configuration of other components in the homelab network stack.
 
 ## Requirements
-List any tools, accounts, or system requirements needed before starting. Use bullets or short phrases.
+
+- Proxmox VE already installed and accessible
+- Debian ISO (minimal installation recommended)
+- SSH access from your primary workstation (e.g., MacBook)
+- Internet access from the VM for package installation
 
 ## Procedure
-Ordered list of the exact steps to follow. Keep it clear and actionable.
+
+This procedure is divided into three stages:
+
+1. **Create and Install Debian VM** (`01_create-debian-vm.md`)
+   - In the Proxmox web UI, create a new virtual machine with 1–2 vCPUs, 2GB RAM, and 16–20GB disk.
+   - Mount the Debian ISO and complete the OS installation.
+   - Configure a static IP (or DHCP reservation) and enable SSH access.
+
+2. **Install Ansible** (`02_install-ansible.md`)
+   - Use APT to install Ansible from Debian’s package repository, or install via `pip` inside a Python virtual environment.
+   - Confirm the Ansible version and basic functionality.
+
+3. **Run Quickstart Tasks** (`03_ansible-quickstart.md`)
+   - Test SSH access from your primary machine to the control node.
+   - Set up a basic Ansible working directory and inventory.
+   - Run a test playbook or `ping` command to verify connectivity and Ansible functionality.
 
 ## Resources
-Links to official docs, blog posts, or troubleshooting tips. Use this to back up steps or dive deeper if needed.
+
+- [Ansible Documentation](https://docs.ansible.com/)
+- [Ansible Installation Guide](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+- [Debian Cloud Images](https://cloud.debian.org/images/cloud/)
+- [Proxmox: Create VM from ISO](https://pve.proxmox.com/wiki/VM_Templates_and_Cloning)
+- [Ansible Best Practices](https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html)
+- [SSH Config Reference](https://man7.org/linux/man-pages/man5/ssh_config.5.html)
+
