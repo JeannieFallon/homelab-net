@@ -2,12 +2,12 @@
 
 A modular, infrastructure-as-code project to stand up a network monitoring stack on a self-hosted Proxmox environment.
 
+<p align="center">
+  <img src="res/screenshots/readme_00.png" alt="Project Overview" width="50%">
+</p>
+
 This repository documents and automates the deployment of key components for observability, diagnostics, and internal
 tooling using lightweight VMs and containers.
-
-    <p align="center">
-      <img src="res/screenshots/readme_00.png" alt="Project Overview" width="50%">
-    </p>
 
 ## Goal
 
