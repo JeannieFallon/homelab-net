@@ -1,8 +1,8 @@
 # Network Monitoring Stack
 
-TODO: document process of setting up each component to monitor network activity
+## Goal
 
-## Planned Monitoring Components
+Create the following components for comprehensive monitoring of home network activity.
 
 ### 1. Pi-hole
 - **Purpose**: DNS-level ad/malware blocking + traffic visibility  
@@ -28,3 +28,11 @@ TODO: document process of setting up each component to monitor network activity
 - **Purpose**: Exposes host metrics to Prometheus  
 - **Deploy on**: Each VM/container you want monitored  
 
+## Requirements
+List any tools, accounts, or system requirements needed before starting. Use bullets or short phrases.
+
+## Procedure
+Ordered list of the exact steps to follow. Keep it clear and actionable.
+
+## Resources
+Links to official docs, blog posts, or troubleshooting tips. Use this to back up steps or dive deeper if needed.
