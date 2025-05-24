@@ -1,0 +1,26 @@
+# Editor swap/temp files
+[._]*.sw[a-p]
+*.bak
+*~
+
+# OS/system files
+.DS_Store
+Thumbs.db
+
+# Ansible sensitive files
+*.retry
+*.vault
+*.key
+secrets.yml
+vault.yml
+.env
+.env.*
+
+# Inventory or config examples
+inventory/hosts.yml        # real file, use a sanitized copy
+group_vars/all.yml         # real file, use example or encrypt
+
+# Logs / output / scratch
+logs/
+*.log
+*.out
