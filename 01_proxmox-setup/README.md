@@ -5,17 +5,17 @@ Install Proxmox hypervisor on an Intel NUC with web interface accessible to othe
 
 ## Requirements
 
-The following equipment was used to install and configure Proxmox on the homelab hypervisor:
+The following equipment was used to install and configure Proxmox:
 
 ### Intel NUC
 
 - **Purpose**: Bare-metal Proxmox hypervisor host
 - **Type**: Small form-factor mini-PC
-- **CPU**: 64-bit, multi-core Intel processor with virtualization support
-- **RAM**: 32GB DDR4 (SO-DIMM)
-- **Storage**: NVMe SSD
-- **Networking**: Gigabit Ethernet
-- **Features**: UEFI boot, compact form factor, multiple USB and video outputs
+- **Specs**:
+    - CPU: 64-bit, multi-core Intel processor with virtualization support
+    - RAM: 32GB DDR4 (SO-DIMM)
+    - Storage: NVMe SSD
+    - Networking: Gigabit Ethernet
 
 ### Windows Laptop
 - **Purpose**: Used to download the Proxmox ISO and flash it to a USB drive
@@ -25,15 +25,18 @@ The following equipment was used to install and configure Proxmox on the homelab
 ### USB Drive
 - **Purpose**: Bootable media for installing Proxmox on the NUC
 - **Specs**:
-  - Capacity: At least 8GB
-  - Format: FAT32 or NTFS (formatted by flashing tool)
+    - Type: USB-A (must fit into the NUC’s standard USB port)
+    - Speed: USB 3.0 or higher is recommended for faster ISO flashing and installation
+    - Capacity: Minimum 8GB
+        - **Note**: any pre-existing data on drive will be erased
+    - Format: FAT32 or NTFS (formatted by flashing tool)
 
 ## Procedure
 
 This procedure is divided into three logical stages based on the machine used:
 
 1. **Create Proxmox ISO Installer** (`01_proxmox-iso.md`)
-   - On a separate machine (e.g. Windows laptop), download the Proxmox VE ISO and flash it to a USB drive using a tool like Rufus or Balena Etcher.
+   - On a separate machine (e.g., Windows laptop), download the Proxmox VE ISO and flash it to a USB drive using a tool like Rufus or Balena Etcher.
 
 2. **Install Proxmox on NUC** (`02_nuc-install.md`)
    - With physical access to the Intel NUC, configure the BIOS, boot from the USB installer, and complete the Proxmox installation on the internal drive.
