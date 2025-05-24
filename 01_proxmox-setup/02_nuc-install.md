@@ -24,6 +24,11 @@ internal drive.
    - On the BIOS main page, confirm the following:
      - Enable **UEFI boot**
      - Set **USB device** as primary boot device
+
+  <p align="center">
+      <img src="../res/screenshots/02_nuc-install_00.png" alt="UEFI Boot" width="50%">
+  </p>
+     
   - In *Advanced > Security > Security Features*:
      - Enable **Virtualization Technology**
   - In *Advanced > Boot > Secure Boot*:
@@ -31,6 +36,10 @@ internal drive.
        - **Note**: The Proxmox ISO is not signed by a trusted certificate authority, so secure Boot may cause
          installer failures or silent boot hangs
    - Save and exit
+
+  <p align="center">
+      <img src="../res/screenshots/02_nuc-install_01.png" alt="Save" width="50%">
+  </p>
 
 3. **Boot to Proxmox Installer**
    - You should see the Proxmox boot screen
