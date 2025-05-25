@@ -39,13 +39,61 @@ https://[PXMX_IP_ADDR]:8006
           dropdown. See [Appendix: Authentication in Proxmox VE](#appendix-authentication-in-proxmox-ve) for more
           details.
         - Disregard the warning that you do not have a valid subscription.
-
-6. **Proxmox Dashboard**
     - You should now see the Proxmox dashboard.
 
- <p align="center">
-   <img src="../res/screenshots/03_web-ui_01.png" alt="Proxmox Dashboard" width="50%">
- </p>
+     <p align="center">
+       <img src="../res/screenshots/03_web-ui_01.png" alt="Proxmox Dashboard" width="50%">
+     </p>
+
+6. **Run Proxmox Post Install Script**
+    - Visit proxmox VE scripts github page
+    - link to specific postinstall script
+    - WARNING: always review script contents before running on system
+    - WARNING: community-maintained and not recommended for production systems
+    - guide through choices on script
+      - do the thing that disables subscription nag
+      - what repos to choose
+      - disable the thing for single node use?
+    - recommended apt update & tools installation (vim, tmux, btop, etc.)
+
+5. **Run Proxmox Post-Installation Script**  
+   - Visit the official community Proxmox helper scripts index for post-install options:
+
+```
+https://community-scripts.github.io/ProxmoxVE/scripts?id=post-pve-install
+```
+   - Review the post-installation script:
+
+```
+https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/tools/pve/post-pve-install.sh
+```
+   - This script configures commonly used post-install options:  
+       - **Repository Configuration**
+           - Debian Sources: Sets up proper Debian Bookworm package sources
+           - Enterprise Repository: Disables paid subscription repository (not needed for home labs)
+           - No-Subscription Repository: Enables free community repository for updates
+           - Ceph Repositories: Configures storage cluster repositories (initially disabled)
+           - Test Repository: Optionally adds bleeding-edge testing repository (disabled)
+       - **System Optimizations**
+           - Subscription Nag: Removes the subscription reminder from web UI
+           - High Availability: Manages HA services (can disable for single-node set-ups)
+           - System Updates: Performs full system package upgrade
+           - Reboot: Optional restart after configuration
+       - **Warning:** This script is community-maintained. Review its contents before running. Not recommended for production systems.
+   - Run on your Proxmox host:  
+```bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/tools/pve/post-pve-install.sh)"
+```
+   - Recommended for home labs:
+       - Enable no-subscription repository
+       - Disable enterprise repository
+       - Remove subscription nag
+       - Disable HA services (not necessary for single-node set-up)
+       - Update system packages to latest available versions
+   - After the script completes, upgrade packages and install productivity tools:
+```bash
+apt update && apt full-upgrade && apt install -y vim tmux btop
+```
 
 
 ## Troubleshooting
@@ -104,6 +152,8 @@ cache certificate errors.
 - [Proxmox VE System Requirements](https://pve.proxmox.com/wiki/System_Requirements)
 - [Proxmox Community Forum](https://forum.proxmox.com/)
   - Useful for troubleshooting login or certificate issues
+- [Proxmox VE Helper Scripts](https://community-scripts.github.io/ProxmoxVE/)
+  - Community-maintained (not official Proxmox scripts)
 
 ## Appendix: Authentication in Proxmox VE
 
