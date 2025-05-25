@@ -45,17 +45,6 @@ https://[PXMX_IP_ADDR]:8006
        <img src="../res/screenshots/03_web-ui_01.png" alt="Proxmox Dashboard" width="50%">
      </p>
 
-6. **Run Proxmox Post Install Script**
-    - Visit proxmox VE scripts github page
-    - link to specific postinstall script
-    - WARNING: always review script contents before running on system
-    - WARNING: community-maintained and not recommended for production systems
-    - guide through choices on script
-      - do the thing that disables subscription nag
-      - what repos to choose
-      - disable the thing for single node use?
-    - recommended apt update & tools installation (vim, tmux, btop, etc.)
-
 5. **Run Proxmox Post-Installation Script**  
    - Visit the official community Proxmox helper scripts index for post-install options:
 
