@@ -49,3 +49,4 @@ This procedure is divided into three logical stages based on the machine used:
 - [Learn Linux TV: Proxmox Full Course](https://youtube.com/playlist?list=PLT98CRl2KxKHnlbYhtABg6cF50bYa8Ulo&si=OG2KcEjnQrU8l_qh)
 - [Mark Watt Tech: Home Assistant PROXMOX Install and Setup (With NUC Alternative)](https://youtu.be/PrKQkI53xys?si=JC_IZlWFhL1uaeTq)
 - [NetworkChuck: Virtual Machines Pt. 2 (Proxmox install w/ Kali Linux)](https://youtu.be/_u8qTN3cCnQ?si=UvFvcBShyHxs4Y3O)
+- [Proxmox VE Helper Scripts](https://community-scripts.github.io/ProxmoxVE/)
