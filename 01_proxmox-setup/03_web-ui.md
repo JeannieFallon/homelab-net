@@ -73,13 +73,15 @@ https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/tools/pve/pos
 ```bash
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/tools/pve/post-pve-install.sh)"
 ```
-   - Recommended for home labs:
+   - Recommended options for home labs:
        - Enable no-subscription repository
        - Disable enterprise repository
        - Remove subscription nag
        - Disable HA services (not necessary for single-node set-up)
+       - Disable Corosync (not necessary for single-node set-up)
        - Update system packages to latest available versions
-   - After the script completes, upgrade packages and install productivity tools:
+   - When prompted, reboot system.
+   - After system has rebooted, upgrade packages and install productivity tools:
 ```bash
 apt update && apt full-upgrade && apt install -y vim tmux btop
 ```
