@@ -17,19 +17,15 @@ configuration of other components in the homelab network stack.
 This procedure is divided into three stages:
 
 1. [**Create and Install Debian VM**](01_create-debian-vm.md)  
-   - In the Proxmox web UI, create a new virtual machine with 1–2 vCPUs, 2GB RAM, and 16–20GB disk.  
-   - Mount the Debian ISO and complete the OS installation.  
-   - Configure a static IP (or DHCP reservation) and enable SSH access.  
+   - In the Proxmox web UI, create a new virtual machine and install Debian
 
 2. [**Install Ansible**](02_install-ansible.md)  
-   - Use APT to install Ansible from Debian’s package repository, or install via `pip` inside a Python virtual
-environment.  
-   - Confirm the Ansible version and basic functionality.  
+   - Install Ansible and confirm basic functionality 
 
 3. [**Run Quickstart Tasks**](03_ansible-quickstart.md)  
-   - Test SSH access from your primary machine to the control node.  
-   - Set up a basic Ansible working directory and inventory.  
-   - Run a test playbook or `ping` command to verify connectivity and Ansible functionality.  
+   - Test SSH access from your primary machine to the control node  
+   - Set up a basic Ansible working directory and inventory
+   - Run a test playbook or `ping` command to verify connectivity and Ansible functionality
 
 ## Resources
 
