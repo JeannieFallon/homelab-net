@@ -136,11 +136,8 @@ cache certificate errors.
 
 ## Resources
 
-- [Proxmox VE Web Interface Overview](https://pve.proxmox.com/wiki/Proxmox_VE_User_Interface)
-- [Proxmox VE Authentication Realms](https://pve.proxmox.com/wiki/User_Management#_authentication_realms)
-- [Proxmox VE User Management](https://pve.proxmox.com/wiki/User_Management)
-- [Proxmox VE Certificates and HTTPS Access](https://pve.proxmox.com/wiki/HTTPS_Certificate_Configuration)
-- [Proxmox VE System Requirements](https://pve.proxmox.com/wiki/System_Requirements)
+- [Proxmox Wiki: User Management](https://pve.proxmox.com/wiki/User_Management)
+- [Proxmox Wiki: System Requirements](https://pve.proxmox.com/wiki/System_Requirements)
 - [Proxmox Community Forum](https://forum.proxmox.com/)
   - Useful for troubleshooting login or certificate issues
 - [Proxmox VE Helper Scripts](https://community-scripts.github.io/ProxmoxVE/)
