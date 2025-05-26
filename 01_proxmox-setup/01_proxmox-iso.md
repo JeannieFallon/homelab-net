@@ -61,5 +61,5 @@ Download the latest Proxmox ISO and flash it to a USB drive using a Windows lapt
 
 ## Resources
 - [Proxmox ISO Downloads](https://www.proxmox.com/en/downloads)
-- [Rufus Guide](https://github.com/pbatard/rufus/wiki)
+- [Rufus Guide](https://github.com/pbatard/rufus/wiki/FAQ)
 - [Proxmox Installation Docs](https://pve.proxmox.com/wiki/Installation)
