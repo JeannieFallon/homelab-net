@@ -75,5 +75,5 @@ internal drive.
 
 ## Resources
 - [Proxmox Installation Guide](https://pve.proxmox.com/wiki/Installation)
-- [Intel NUC BIOS Reference](https://www.intel.com/content/www/us/en/support/articles/000005687/intel-nuc.html)
+- [BIOS Settings Glossary for Intel NUC](https://www.intel.com/content/www/us/en/support/articles/000006028/intel-nuc.html)
 
