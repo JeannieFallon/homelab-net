@@ -20,7 +20,7 @@ internal drive.
    - Power on the NUC
    - As soon as NUC powers on, start tapping `F2` to launch the Intel Visual BIOS menu
 
-2. **BIOS Setup**
+2. **BIOS Set-up**
    - On the BIOS main page, confirm the following:
      - Enable **UEFI boot**
      - Set **USB device** as primary boot device

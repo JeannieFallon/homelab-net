@@ -18,7 +18,7 @@ automation.
 
 This project is structured into three major phases:
 
-### 1. Proxmox Setup
+### 1. Proxmox Set-up
 Install and configure the Proxmox VE hypervisor on a bare-metal Intel NUC, including BIOS tuning, static IP assignment,
 and first access via the web UI.
 
@@ -38,7 +38,7 @@ Use Ansible to automatically deploy and configure lightweight monitoring tools, 
 
 ```plaintext
 01_proxmox-setup/             # Manual install steps for Proxmox VE
-02_ansible-control-node/      # Creation and setup of Ansible control node
+02_ansible-control-node/      # Creation and set-up of Ansible control node
 03_network-monitoring-stack/  # Planning and deployment of monitoring tools
 ansible/                      # Playbooks, roles, and inventories
 res/                          # Screenshots, diagrams, and other media

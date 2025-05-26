@@ -35,13 +35,13 @@ The following equipment was used to install and configure Proxmox:
 
 This procedure is divided into three logical stages based on the machine used:
 
-1. **Create Proxmox ISO Installer** (`01_proxmox-iso.md`)
+1. **[Create Proxmox ISO Installer](01_proxmox-iso.md)**
    - On a separate machine (e.g., Windows laptop), download the Proxmox VE ISO and flash it to a USB drive using a tool like Rufus or Balena Etcher.
 
-2. **Install Proxmox on NUC** (`02_nuc-install.md`)
+2. **[Install Proxmox on NUC](02_nuc-install.md)**
    - With physical access to the Intel NUC, configure the BIOS, boot from the USB installer, and complete the Proxmox installation on the internal drive.
 
-3. **Access Web UI and Configure Hypervisor** (`03_web-ui.md`)
+3. **[Access Web UI and Configure Hypervisor](03_web-ui.md)**
    - From another machine on the same network, connect to the Proxmox web interface to verify the installation and complete initial configuration steps (e.g., storage, networking, subscription settings).
 
 ## Resources
