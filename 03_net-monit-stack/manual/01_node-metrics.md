@@ -8,43 +8,82 @@ Prometheus server, and Grafana should display these metrics on a real-time dashb
 
 ## Requirements
 
-- Functional Ansible control node
-- At least one target node (VM or container) with SSH access
-- Basic understanding of Ansible inventory and playbook execution
-- Debian-based OS on target nodes
-- Internet access for package installation
+- A Debian-based node with SSH access
+  - **Suggestion**: create a dev VM following the procedure outlined in [`02_ansible-control-node/01_create-debian-vm.md`](../02_ansible-control-node/01_create-debian-vm.md)  
+  - Recommended resource allocation for dev VM: 2 cores, 6 GB (6144 MiB) RAM, and 32GB disk space.
+- WAN access
 
 ## Procedure
 
-1. **Install Node Exporter on each monitored node**
-   - Use Ansible or manual steps to install `prometheus-node-exporter`
-   - Enable and start the service
-   - Confirm that metrics are exposed on port `9100`
+1. **Install Node Exporter on each monitored node**  
+   - Use APT or Ansible to install Node Exporter:  
+     ```bash
+     sudo apt install -y prometheus-node-exporter
+     sudo systemctl enable --now prometheus-node-exporter
+     ```
+   - Confirm metrics are exposed at:  
+     ```
+     http://<node-ip>:9100/metrics
+     ```
 
-2. **Install Prometheus on a dedicated VM or container**
-   - Download and extract the latest Prometheus release
-   - Define scrape targets for each node running Node Exporter
-   - Start the Prometheus service and verify the web UI (`http://<prometheus-ip>:9090`)
+2. **Install Prometheus on a dedicated VM or container**  
+   - Download and extract the latest Prometheus release:
+     ```bash
+     curl -LO https://github.com/prometheus/prometheus/releases/latest/download/prometheus-*-amd64.tar.gz
+     tar -xzf prometheus-*-amd64.tar.gz
+     cd prometheus-*/
+     ```
+   - Define targets in `prometheus.yml` under the `scrape_configs` section:
+     ```yaml
+     scrape_configs:
+       - job_name: 'node_exporter_targets'
+         static_configs:
+           - targets: ['192.168.1.10:9100', '192.168.1.11:9100']
+     ```
+   - Start Prometheus:
+     ```bash
+     ./prometheus --config.file=prometheus.yml
+     ```
+   - Access the UI at:
+     ```
+     http://<prometheus-ip>:9090
+     ```
 
-3. **Install Grafana**
-   - Install Grafana on the same host as Prometheus or on a separate node
-   - Log in to Grafana (`http://<grafana-ip>:3000`)
-   - Add Prometheus as a data source
-   - Import a basic Node Exporter dashboard
+3. **Install Grafana**  
+   - Install Grafana from official sources or APT (Debian has it in backports):
+     ```bash
+     sudo apt install -y grafana
+     sudo systemctl enable --now grafana-server
+     ```
+   - Access Grafana at:
+     ```
+     http://<grafana-ip>:3000
+     ```
+   - Log in (default: admin/admin), add Prometheus as a data source, and import a basic Node Exporter dashboard from [Grafana Dashboards](https://grafana.com/grafana/dashboards).
 
-4. **(Optional) Install Netdata on each node**
-   - Install Netdata for per-node real-time dashboards (`http://<node-ip>:19999`)
-   - Optionally configure Netdata to expose Prometheus-compatible metrics
+4. **(Optional) Install Netdata on each node**  
+   - Install Netdata:
+     ```bash
+     bash <(curl -Ss https://my-netdata.io/kickstart.sh)
+     ```
+   - Access the dashboard at:
+     ```
+     http://<node-ip>:19999
+     ```
+   - Optionally expose metrics to Prometheus by enabling the Prometheus plugin in Netdata’s config.
 
-5. **Verify system metrics collection**
-   - Confirm Prometheus is scraping all configured targets
-   - Confirm Grafana dashboards display node metrics correctly
+5. **Verify Metrics Collection**  
+   - In Prometheus, confirm that all targets are listed and healthy at:  
+     ```
+     http://<prometheus-ip>:9090/targets
+     ```
+   - In Grafana, ensure your dashboards reflect real-time data for all monitored nodes.
 
 ## Resources
 
-- [Prometheus: Node Exporter](https://github.com/prometheus/node_exporter)
-- [Prometheus Download](https://prometheus.io/download/)
-- [Grafana Installation](https://grafana.com/docs/grafana/latest/installation/)
-- [Grafana Dashboards: Node Exporter](https://grafana.com/grafana/dashboards/)
-- [Netdata Installation](https://learn.netdata.cloud/docs/agent/packaging/installer)
+- [Prometheus Node Exporter Docs](https://prometheus.io/docs/guides/node-exporter/)
+- [Prometheus Getting Started](https://prometheus.io/docs/prometheus/latest/getting_started/)
+- [Grafana Installation Docs](https://grafana.com/docs/grafana/latest/setup-grafana/installation/)
+- [Netdata Installation](https://learn.netdata.cloud/docs/agent/packaging/installer/)
+- [Grafana Dashboard: Node Exporter Full](https://grafana.com/grafana/dashboards/1860-node-exporter-full/)
 
