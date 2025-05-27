@@ -127,16 +127,16 @@ Create a virtual machine on the Proxmox host that will serve as the Ansible cont
       apt update && apt upgrade && apt install -y sudo tmux vim btop tree
       ```
     - Install the QEMU guest agent:
-     ```bash
-     apt install -y qemu-guest-agent
-     ```
+        ```bash
+        apt install -y qemu-guest-agent
+        ```
     - In the Proxmox web UI, navigate to the *Options* tab
     - Make sure that **QEMU Guest Agent** is set to **Enabled**
     - Reboot the VM. If the guest agent is running properly, you should see the VM's IP listed on the *Summary* tab.
     - Log back in with your non-elevated user and confirm that `sudo` is working. The following command should return `root`:
-     ```bash
-     sudo whoami
-     ```
+        ```bash
+        sudo whoami
+        ```
 
 4. **Snapshot**
     - Once you confirm that your non-elevated user has `sudo` access, power down the VM.
