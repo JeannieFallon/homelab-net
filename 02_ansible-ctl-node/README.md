@@ -22,10 +22,10 @@ This procedure is divided into three stages:
 2. [**Install Ansible**](02_install-ansible.md)  
    - Install Ansible and confirm basic functionality 
 
-3. [**Run Quickstart Tasks**](03_ansible-quickstart.md)  
+3. [**Run Ansible Quickstart**](03_ansible-quickstart.md)  
    - Test SSH access from your primary machine to the control node  
    - Set up a basic Ansible working directory and inventory
-   - Run a test playbook or `ping` command to verify connectivity and Ansible functionality
+   - Run a test `ping` playbook to verify connectivity and Ansible functionality
 
 ## Resources
 
