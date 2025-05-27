@@ -84,7 +84,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/Proxmo
    - When prompted, reboot system.
    - After system has rebooted, upgrade packages and install productivity tools:
 ```bash
-apt update && apt full-upgrade && apt install -y vim tmux btop
+apt update && apt full-upgrade && apt install -y vim tmux btop tree
 ```
 
 
