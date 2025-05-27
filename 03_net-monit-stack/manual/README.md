@@ -9,7 +9,6 @@ and optional logging for internal services and external connectivity.
 ## Requirements
 
 - Proxmox VE with LXC/VM support
-- Ansible control node (functional)
 - Debian-based containers or VMs for monitoring services
 - Access to internal node IPs (for scraping/exporting metrics)
 - Optional: router/switches that support SNMP
