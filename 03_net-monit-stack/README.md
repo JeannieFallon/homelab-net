@@ -6,9 +6,9 @@ below.
 
 ## Options
 
-### `automated/`: Ansible-Based Deployment
+### Ansible Automated Deployment
 
-If you already have a working [Ansible](https://www.ansible.com/) control node, you can use the Ansible runbook to
+If you already have a working [Ansible](https://www.ansible.com/) control node, you can use Ansible playbooks to
 automatically deploy and configure the full monitoring stack. This approach is faster, repeatable, and designed for
 infrastructure-as-code workflows.
 
@@ -21,7 +21,7 @@ See `[automated/README.md](automated/README.md)` for more details.
 
 ---
 
-### `manual/`: Step-by-Step Manual Deployment
+### Step-by-Step Manual Deployment
 
 If you prefer to install and configure components individually, the manual procedure walks through each tool in
 isolation with detailed set-up instructions.
