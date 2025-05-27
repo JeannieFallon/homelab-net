@@ -46,7 +46,8 @@ https://[PXMX_IP_ADDR]:8006
      </p>
 
 5. **Run Proxmox Post-Installation Script**  
-   - Visit the official community Proxmox helper scripts index for post-install options:
+
+  - Visit the official community Proxmox helper scripts index for post-install options:
 
 ```
 https://community-scripts.github.io/ProxmoxVE/scripts?id=post-pve-install
