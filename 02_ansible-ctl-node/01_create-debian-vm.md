@@ -56,7 +56,7 @@ Create a virtual machine on the Proxmox host that will serve as the Ansible cont
              with QEMU Guest Agent features
          - Disk size: 32 GiB
          - Cache: `Default (no cache)`
-         - Storage: Select your desired storage pool
+         - Storage: Select your preferred storage pool
        - **CPU**
          - Socket: 1
          - Cores: 2
