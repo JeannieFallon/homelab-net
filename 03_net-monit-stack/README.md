@@ -17,7 +17,7 @@ Start here if:
 - You want to minimize manual configuration
 - You’re planning to scale or iterate on this set-up over time
 
-See `[automated/README.md](automated/README.md)` for more details.
+See [automated/README.md](automated/README.md) for more details.
 
 ---
 
@@ -31,7 +31,7 @@ Start here if:
 - You want to understand how everything works under the hood
 - You're setting up a one-off or learning-focused environment
 
-See `[manual/README.md](manual/README.md)` for more details.
+See [manual/README.md](manual/README.md) for more details.
 
 ---
 
