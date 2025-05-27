@@ -25,89 +25,87 @@ Create a virtual machine on the Proxmox host that will serve as the Ansible cont
           from the file or a hash listed on the ISO's download page.
    - Once the upload is complete, you should see the ISO listed on ISO Images tab.
 
-
 3. **Create the VM**
+   - In the Proxmox web UI, click **Create VM** in the upper right
+   - Use the following options to configure the VM:
+       - **General**
+         - Node: Select your Proxmox node (likely `pve`)
+         - VM ID: Default value is sufficient unless you have designed an ID schema for organization
+         - Name: `ansible-ctl`
+         - Check the box for *Advanced* options at the bottom of the tab
+       - **OS**
+         - ISO Image: Select the Debian ISO uploaded in the previous step
+         - Guest OS: Choose `Linux`
+         - Version: `5.x - 2.6 Kernel` (safe default for Debian Bookworm)
+       - **System**
+         - Graphic Card: Default
+         - Machine: `q35`
+           - `q35` provides a modern virtual chipset with PCIe and UEFI support
+         - BIOS: Select **OVMF (UEFI)**
+           - **Note**: this assumes that your hardware supports UEFI, like the Intel NUC that was used to stand up Proxmox
+             in the previous section
+         - EFI Storage: Choose available EFI storage location, likely `local-lvm`
+           - **Note**: you can confirm available EFI storage at `Datacenter > Storage > local-lvm > Content`
+         - SCSI Controller: Use **VirtIO SCSI Single** for optimal performance
+           - **Note**: For a storage-heavy VM to be used as a media server, NAS, or database node, use plain VirtIO SCSI
+         - Check **QEMU Agent** to install the guest agent later
+       - **Disks**
+         - Bus/Device: `SCSI`
+           - **Note**: Although VirtIO Block may be technically faster in raw I/O benchmarks, SCSI paired with VirtIO SCSI
+             is a better choice to support hotplugging, more flexibility for back-ups and snapshots, and better integration
+             with QEMU Guest Agent features
+         - Disk size: 32 GiB
+         - Cache: `Default (no cache)`
+         - Storage: Select your desired storage pool
+       - **CPU**
+         - Socket: 1
+         - Cores: 2
+         - Type: use `host` to mirror the physical CPU for maximum performance
+           - **Note**: ideal for single-node homelabs, but not portable across hosts
+       - **Memory**
+         - Memory: 4096 MB (4 GB)
+         - Uncheck box for *Ballooning Device*
+           - **Note**: you can enable if you want dynamic memory control
+       - **Network**
+         - Bridge: Default (typically `vmbr0`)
+         - Model: `VirtIO (paravirtualized)`
+         - MAC address: Leave default unless you need a reserved one
+         - Uncheck box for *Firewall*
+       - **Confirm**
+         - Review all settings
+         - Click **Finish** to create the VM
 
-- In the Proxmox web UI, click **Create VM** in the upper right
-- Use the following options to configure the VM:
-    - **General**
-      - Node: Select your Proxmox node (likely `pve`)
-      - VM ID: Default value is sufficient unless you have designed an ID schema for organization
-      - Name: `ansible-ctl`
-      - Check the box for *Advanced* options at the bottom of the tab
-    - **OS**
-      - ISO Image: Select the Debian ISO uploaded in the previous step
-      - Guest OS: Choose `Linux`
-      - Version: `5.x - 2.6 Kernel` (safe default for Debian Bookworm)
-    - **System**
-      - Graphic Card: Default
-      - Machine: `q35`
-        - `q35` provides a modern virtual chipset with PCIe and UEFI support
-      - BIOS: Select **OVMF (UEFI)**
-        - **Note**: this assumes that your hardware supports UEFI, like the Intel NUC that was used to stand up Proxmox
-          in the previous section
-      - EFI Storage: Choose available EFI storage location, likely `local-lvm`
-        - **Note**: you can confirm available EFI storage at `Datacenter > Storage > local-lvm > Content`
-      - SCSI Controller: Use **VirtIO SCSI Single** for optimal performance
-        - **Note**: For a storage-heavy VM to be used as a media server, NAS, or database node, use plain VirtIO SCSI
-      - Check **QEMU Agent** to install the guest agent later
-    - **Disks**
-      - Bus/Device: `SCSI`
-        - **Note**: Although VirtIO Block may be technically faster in raw I/O benchmarks, SCSI paired with VirtIO SCSI
-          is a better choice to support hotplugging, more flexibility for back-ups and snapshots, and better integration
-          with QEMU Guest Agent features
-      - Disk size: 32 GiB
-      - Cache: `Default (no cache)`
-      - Storage: Select your desired storage pool
-    - **CPU**
-      - Socket: 1
-      - Cores: 2
-      - Type: use `host` to mirror the physical CPU for maximum performance
-        - **Note**: ideal for single-node homelabs, but not portable across hosts
-    - **Memory**
-      - Memory: 4096 MB (4 GB)
-      - Uncheck box for *Ballooning Device*
-        - **Note**: you can enable if you want dynamic memory control
-    - **Network**
-      - Bridge: Default (typically `vmbr0`)
-      - Model: `VirtIO (paravirtualized)`
-      - MAC address: Leave default unless you need a reserved one
-      - Uncheck box for *Firewall*
-    - **Confirm**
-      - Review all settings
-      - Click **Finish** to create the VM
-
-3. **Start VM and install Debian**
+4. **Start VM and install Debian**
     - In the Proxmox web UI, select the new `ansible-ctl` VM
     - Navigate to the *Console* tab and power on the VM
     - Once the VM boots, choose the "Graphical install" option
     - The following installation options are recommended for a lightweight, CLI-based Debian server environment:
-          - **Language and Locale**
-                - Select your preferred language and location
-          - **Configure the network**
-                - Hostname: `ansible-ctl`
-                    - **Note**: match the VM name for consistent inventory and DNS mapping
-                - Domain name: `local`
-                    - **Note**: this gives the VM an FQDN of `ansible-ctl.local`, which improves internal DNS or mDNS
-                      resolution on a LAN, ensures FQDN consistency for tools like Netdata or Prometheus, and helps with
-                      log clarity and system identification
-          - **User and Passwords**
+       - **Language and Locale**
+          - Select your preferred language and location
+       - **Configure the network**
+          - Hostname: `ansible-ctl`
+              - **Note**: match the VM name for consistent inventory and DNS mapping
+          - Domain name: `local`
+              - **Note**: this gives the VM an FQDN of `ansible-ctl.local`, which improves internal DNS or mDNS
+                resolution on a LAN, ensures FQDN consistency for tools like Netdata or Prometheus, and helps with
+                log clarity and system identification
+       - **User and Passwords**
             - Set a strong root password
             - Create a non-elevated user
-          - **Configure the clock**
-            - Select your preferred time zone
-          - **Partition disks**
-            - Choose **Guided - Use entire disk**
-            - Select SCSI disk listed, with disk size matching that set during VM creation
-            - Select "All files in one partition"
-            - Select "Finish partitioning"
-            - You will need to explicitly confirm "yes" to write changes to disk
-          - **Configure package manager**
-            - Select defaults and your geographic location for optimal mirror selection
-          - **Software Selection**
-            - Uncheck **Debian Desktop Environment** for efficient, headless server
-            - Check **SSH server**
-            - Check **standard system utilities**
+       - **Configure the clock**
+         - Select your preferred time zone
+       - **Partition disks**
+         - Choose "Guided - Use entire disk"
+         - Select SCSI disk listed (disk size should roughly match that set during VM creation)
+         - Select "All files in one partition"
+         - Select "Finish partitioning"
+         - You will need to explicitly confirm "yes" to write changes to disk
+       - **Configure package manager**
+         - Select defaults and your geographic location for optimal mirror selection
+       - **Software Selection**
+         - Uncheck "Debian Desktop Environment" options for efficient, headless server
+         - Check "SSH server"
+         - Check "standard system utilities"
     - After installation completes:
       - Reboot the VM and verify login via Proxmox Console
       - Log in with your created user
@@ -129,7 +127,6 @@ Create a virtual machine on the Proxmox host that will serve as the Ansible cont
 
 ## Resources
 
-- [Proxmox VE: Creating VMs](https://pve.proxmox.com/wiki/Virtual_Machines)
 - [Debian Official ISO Downloads](https://www.debian.org/distrib/)
 - [Proxmox Recommended Disk and NIC Settings](https://pve.proxmox.com/wiki/Performance_Tweaks)
 - [Debian Installation Guide](https://www.debian.org/releases/bookworm/amd64/index.en.html)
