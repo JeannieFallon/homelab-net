@@ -2,39 +2,45 @@
 
 ## Goal
 
-Install Ansible on the control node using a method appropriate for a lightweight homelab VM.
+Install the latest stable version of Ansible system-wide on the `ansible-ctl` node using Debian's official backports
+repository. This node will serve as the Ansible control node used to run playbooks to automate system configuration of
+other managed nodes.
 
 ## Requirements
 
-- Debian VM is up and accessible via SSH
-- System is connected to the internet
+- Debian 12 (Bookworm) installed
+- Non-elevated user with `sudo` privileges
+- WAN access
 
 ## Procedure
 
-1. Update system packages:
+1. Log into the `ansible-ctl` node as your non-elevated user.
+
+2. Create a new entry in APT sources for backports:
     ```bash
-    sudo apt update && sudo apt full-upgrade
+    echo 'deb http://deb.debian.org/debian bookworm-backports main' | sudo tee /etc/apt/sources.list.d/backports.list
     ```
 
-2. Option A: Install via apt (stable)
+2. Update package index:
     ```bash
-    sudo apt install -y ansible
+    sudo apt update
     ```
 
-3. Option B: Install via pip (latest)
+5. Install Ansible from backports:
     ```bash
-    sudo apt install -y python3-pip
-    pip3 install --user ansible
+    sudo apt -t bookworm-backports install -y ansible
     ```
 
-4. Confirm Ansible is installed:
+5. Verify installation:
     ```bash
     ansible --version
     ```
 
+6. You should see the latest stable version of Ansible, now available system-wide.
+
+
 ## Resources
 
 - [Ansible Installation Guide (Official)](https://docs.ansible.com/ansible/latest/installation_guide/index.html)
-- [Ansible on Debian (Debian Wiki)](https://wiki.debian.org/ansible)
-- [Using pip for User Installs](https://pip.pypa.io/en/stable/user_guide/#user-installs)
+- [Installing Ansible on Debian](https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html#installing-ansible-on-debian)
 

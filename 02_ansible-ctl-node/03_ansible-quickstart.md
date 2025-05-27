@@ -11,17 +11,27 @@ Validate that Ansible is installed and capable of running a basic local playbook
 
 ## Procedure
 
-1. Create a basic inventory file:
+1. Create and move to a new working directory:
+    ```bash
+    mkdir ~/quickstart && cd ~/quickstart
+    ```
 
+1. Create a basic host inventory file with the following content:
+    ```bash
+    vim hosts
+    ```
     ```ini
     [local]
     localhost ansible_connection=local
     ```
 
-2. Create a test playbook called `test.yml`:
-
+2. Create a test playbook with the following content:
+    ```bash
+    vim test.yml
+    ```
     ```yaml
-    - name: Test Ansible Setup
+    ---
+    - name: Test Ansible Set-up
       hosts: local
       tasks:
         - name: Print a confirmation message
@@ -35,7 +45,7 @@ Validate that Ansible is installed and capable of running a basic local playbook
     ansible-playbook -i hosts test.yml
     ```
 
-4. Confirm output includes the expected debug message.
+4. Confirm that output includes the expected debug message.
 
 ## Resources
 

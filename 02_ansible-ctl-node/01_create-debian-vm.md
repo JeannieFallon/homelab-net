@@ -106,24 +106,41 @@ Create a virtual machine on the Proxmox host that will serve as the Ansible cont
          - Uncheck "Debian Desktop Environment" options for efficient, headless server
          - Check "SSH server"
          - Check "standard system utilities"
-    - After installation completes:
-      - Reboot the VM and verify login via Proxmox Console
-      - Log in with your created user
-      - Confirm WAN connectivity by pinging a Google DNS server:
-          ```bash
-          ping 8.8.8.8
-          ```
-      - Elevate to root:
-          ```bash
-          su -
-          ```
-      - As root user, update packages and install common productivity tools:
-          ```bash
-          apt update && apt upgrade && apt install -y tmux vim btop tree
-          ```
-      - Once package installation completes, power down the VM
-      - Navigate to the *Snapshots* tab and take a snapshot
-        - **Note**: this will serve as a clean rollback point
+    - When prompted, reboot the VM to complete installation.
+
+4. **Configure VM**
+    - In the Proxmox web UI, navigate to the *Console* tab and log in with your non-elevated user
+    - Confirm WAN connectivity by pinging a Google DNS server:
+      ```bash
+      ping 8.8.8.8
+      ```
+    - Elevate to root:
+      ```bash
+      su -
+      ```
+    - Add the non-elevated user to the `sudo` group:
+      ```bash
+      usermod -aG sudo [NON_ELEV_USER]
+      ```
+    - Update packages and install common productivity tools:
+      ```bash
+      apt update && apt upgrade && apt install -y sudo tmux vim btop tree
+      ```
+    - Install the QEMU guest agent:
+     ```bash
+     apt install -y qemu-guest-agent
+     ```
+    - In the Proxmox web UI, navigate to the *Options* tab
+    - Make sure that **QEMU Guest Agent** is set to **Enabled**
+    - Reboot the VM. If the guest agent is running properly, you should see the VM's IP listed on the *Summary* tab.
+    - Log back in with your non-elevated user and confirm that `sudo` is working. The following command should return `root`:
+     ```bash
+     sudo whoami
+     ```
+
+4. **Snapshot**
+    - Once you confirm that your non-elevated user has `sudo` access, power down the VM.
+    - On the *Snapshots* tab, take a snapshot to serve as your base rollback point.
 
 ## Resources
 
