@@ -8,56 +8,56 @@ Prometheus server, and Grafana should display these metrics on a real-time dashb
 
 ## Requirements
 
-- A Debian-based node with SSH access
-  - **Suggestion**: create a dev VM following the procedure outlined in [`02_ansible-control-node/01_create-debian-vm.md`](../02_ansible-control-node/01_create-debian-vm.md)
-  - Recommended resource allocation for dev VM: 2 cores, 6 GB (6144 MiB) RAM, and 32 GB disk space.
+- Two Debian-based nodes with SSH access
+  - **Suggestion**: create VMs following the procedure outlined in [`02_ansible-control-node/01_create-debian-vm.md`](../02_ansible-ctl-node/01_create-debian-vm.md)
+  - Create a dev VM to serve as a monitored node
+      - Recommended resource allocation for dev VM: 2 cores, 6 GB (6144 MiB) RAM, and 32 GB disk space
+  - Create a second VM to host Prometheus
+      - Recommended resource allocation for Prometheus VM: 2 cores, 4 GB (4096 MiB) RAM, and 32 GB disk space
 - WAN access
 
 ## Procedure
 
 1. **Install Node Exporter on each monitored node**
-   - SSH into the dev VM or other monitored node running Debian-based Linux.
-   - Install Node Exporter, a lightweight Prometheus client that exposes hardware and OS metrics:
-     ```bash
-     sudo apt install -y prometheus-node-exporter
-     ```
-   - Enable and confirm the Node Exporter is `active (running)`:
-     ```bash
-     sudo systemctl enable --now prometheus-node-exporter && systemctl status prometheus-node-exporter
-     ```
-   - In a web browser on the local network, confirm metrics are exposed at:
-     ```
-     http://[DEV_IP]:9100/metrics
-     ```
+- SSH into the dev VM or other monitored node running Debian-based Linux.
+- Install Node Exporter, a lightweight Prometheus client that exposes hardware and OS metrics:
+ ```bash
+ sudo apt install -y prometheus-node-exporter
+ ```
+- Enable and confirm the Node Exporter is `active (running)`:
+ ```bash
+ sudo systemctl enable --now prometheus-node-exporter && systemctl status prometheus-node-exporter
+ ```
+- In a web browser on the local network, confirm metrics are exposed at:
+ ```
+ http://[DEV_IP]:9100/metrics
+ ```
 
-2. **Install Prometheus on a dedicated VM or container**
-   - First, create a dedicated Prometheus VM using the same procedure outlined in
-     `[02_ansible-ctl/01_create-vm.md](../02_ansible-ctl/01_create-vm.md)`
-     - Recommended resource allocation for Prometheus VM: 2 cores, 4 GB (4096 MiB) RAM, and 32 GB disk space.
-     - This node should remain online to scrape and store time-series metrics continuously.
-   - SSH into the Prometheus VM.
-   - Download and extract the latest Prometheus release:
-     ```bash
-     curl -LO https://github.com/prometheus/prometheus/releases/latest/download/prometheus-*-amd64.tar.gz
-     ```
-     ```bash
-     tar -xzf prometheus-*-amd64.tar.gz && cd prometheus-*/
-     ```
-   - Define targets in `prometheus.yml` under the `scrape_configs` section:
-     ```yaml
-     scrape_configs:
-       - job_name: 'node_exporter_targets'
-         static_configs:
-           - targets: ['[DEV_IP]:9100']
-     ```
-   - Start Prometheus:
-     ```bash
-     ./prometheus --config.file=prometheus.yml
-     ```
-   - Access the UI at:
-     ```
-     http://[PROMETHEUS_IP]:9090
-     ```
+2. **Install Prometheus on a dedicated VM**
+- SSH into the Prometheus VM.
+- Download and extract the latest Prometheus release:
+ ```bash
+ curl -LO https://github.com/prometheus/prometheus/releases/latest/download/prometheus-*-amd64.tar.gz
+ ```
+ ```bash
+ tar -xzf prometheus-*-amd64.tar.gz && cd prometheus-*/
+ ```
+- Define targets in `prometheus.yml` under the `scrape_configs` section:
+ ```yaml
+ scrape_configs:
+   - job_name: 'node_exporter_targets'
+     static_configs:
+       - targets: ['[DEV_IP]:9100']
+ ```
+- Start Prometheus:
+ ```bash
+ ./prometheus --config.file=prometheus.yml
+ ```
+- Access the UI at:
+ ```
+ http://[PROMETHEUS_IP]:9090
+ ```
+- This node should remain online to scrape and store time-series metrics continuously.
 
 3. **Install Grafana**
    - Install Grafana from official sources or APT (Debian has it in backports):
