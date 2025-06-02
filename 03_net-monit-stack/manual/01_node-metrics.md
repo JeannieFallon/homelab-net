@@ -9,7 +9,7 @@ Prometheus server, and Grafana should display these metrics on a real-time dashb
 ## Requirements
 
 - Two Debian-based nodes with SSH access
-  - **Suggestion**: create VMs following the procedure outlined in [`02_ansible-control-node/01_create-debian-vm.md`](../02_ansible-ctl-node/01_create-debian-vm.md)
+  - **Suggestion**: create VMs following the procedure outlined in [`02_ansible-control-node/01_create-debian-vm.md`](../../02_ansible-ctl-node/01_create-debian-vm.md)
   - Create a dev VM to serve as a monitored node
       - Recommended resource allocation for dev VM: 2 cores, 6 GB (6144 MiB) RAM, and 32 GB disk space
   - Create a second VM to host Prometheus
