@@ -14,6 +14,7 @@ Prometheus server, and Grafana should display these metrics on a real-time dashb
       - Recommended resource allocation for dev VM: 2 cores, 6 GB (6144 MiB) RAM, and 32 GB disk space
   - Create a second VM to host Prometheus
       - Recommended resource allocation for Prometheus VM: 2 cores, 4 GB (4096 MiB) RAM, and 32 GB disk space
+      - Use `prometheus` as the VM name and hostname for clarity
 - WAN access
 
 ## Procedure
