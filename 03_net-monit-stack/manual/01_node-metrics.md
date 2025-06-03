@@ -38,7 +38,7 @@ Prometheus server, and Grafana should display these metrics on a real-time dashb
 - SSH into the Prometheus VM.
 - Download and extract the latest Prometheus release:
  ```bash
- curl -LO https://github.com/prometheus/prometheus/releases/latest/download/prometheus-*-amd64.tar.gz
+ curl -LO https://github.com/prometheus/prometheus/releases/download/v3.4.1/prometheus-3.4.1.linux-amd64.tar.gz
  ```
  ```bash
  tar -xzf prometheus-*-amd64.tar.gz && cd prometheus-*/
