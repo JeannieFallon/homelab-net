@@ -19,7 +19,7 @@ Prometheus server, and Grafana should display these metrics on a real-time dashb
 
 ## Procedure
 
-1. **Install Node Exporter on each monitored node**
+### 1. Install Node Exporter on each monitored node
 - SSH into the dev VM or other monitored node running Debian-based Linux.
 - Install Node Exporter, a lightweight Prometheus client that exposes hardware and OS metrics:
  ```bash
@@ -34,7 +34,7 @@ Prometheus server, and Grafana should display these metrics on a real-time dashb
  http://[DEV_IP]:9100/metrics
  ```
 
-2. **Install Prometheus on a dedicated VM**
+### 2. Install Prometheus on a dedicated VM
 - SSH into the Prometheus VM.
 - Download and extract the latest Prometheus release:
  ```bash
@@ -56,7 +56,7 @@ Prometheus server, and Grafana should display these metrics on a real-time dashb
  ```bash
  sudo mkdir -p /etc/prometheus /var/lib/prometheus
  ```
-- Copy the Prometheus config file to `etc`:
+- Copy the Prometheus config file to `etc/`:
  ```bash
  sudo cp ~/prometheus/prometheus.yml /etc/prometheus/
  ```
@@ -100,12 +100,24 @@ Prometheus server, and Grafana should display these metrics on a real-time dashb
  ```url
  http://[PROMETHEUS_IP]:9090
  ```
-- The following steps will add other machines as monitored nodes. Define each monitored node in the list of `targets` under the `scrape_configs` section. **Note**: each monitored node must be running the Prometheus node exporter, as installed in the previous section:
+- The following steps will add other nodes as monitored targets. Update `/etc/prometheus/prometheus.yml` with the following, defining each monitored node in the list of `targets` under the `node_exporter_targerts` job. **Note**: each monitored node must be running the Prometheus node exporter, as installed in the previous section:
  ```yaml
- scrape_configs:
-   - job_name: 'node_exporter_targets'
-     static_configs:
-       - targets: ['[DEV_IP]:9100']
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          app: 'prometheus'
+
+  - job_name: 'node_exporter_targets'
+    static_configs:
+      - targets: ['[DEV_VM]:9100']  
+        labels:
+          app: 'node_exporter'
+ ```
+- Restart Prometheus service:
+ ```bash
+ sudo systemctl restart prometheus
  ```
 - Back in a desktop environment, confirm that the newly added target is producing output:
  ```
@@ -113,7 +125,7 @@ Prometheus server, and Grafana should display these metrics on a real-time dashb
  ```
 - This node should remain online to scrape and store time-series metrics continuously.
 
-3. **Install Grafana**
+### 3. Install Grafana
    - Install Grafana from official sources or APT (Debian has it in backports):
      ```bash
      sudo apt install -y grafana
@@ -125,7 +137,7 @@ Prometheus server, and Grafana should display these metrics on a real-time dashb
      ```
    - Log in (default: admin/admin), add Prometheus as a data source, and import a basic Node Exporter dashboard from [Grafana Dashboards](https://grafana.com/grafana/dashboards).
 
-4. **(Optional) Install Netdata on each node**  
+### 4. Install Netdata on each node
    - Install Netdata:
      ```bash
      bash <(curl -Ss https://my-netdata.io/kickstart.sh)
@@ -136,7 +148,7 @@ Prometheus server, and Grafana should display these metrics on a real-time dashb
      ```
    - Optionally expose metrics to Prometheus by enabling the Prometheus plugin in Netdata’s config.
 
-5. **Verify Metrics Collection**  
+### 5. Verify Metrics Collection 
    - In Prometheus, confirm that all targets are listed and healthy at:  
      ```
      http://<prometheus-ip>:9090/targets
