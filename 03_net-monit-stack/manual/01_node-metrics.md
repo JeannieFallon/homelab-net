@@ -41,20 +41,73 @@ Prometheus server, and Grafana should display these metrics on a real-time dashb
  curl -LO https://github.com/prometheus/prometheus/releases/download/v3.4.1/prometheus-3.4.1.linux-amd64.tar.gz
  ```
  ```bash
- tar -xzf prometheus-*-amd64.tar.gz && cd prometheus-*/
+ mkdir -p prometheus && tar -xzf prometheus-*-amd64.tar.gz -C prometheus --strip-components=1 && cd prometheus
  ```
-- Define targets in `prometheus.yml` under the `scrape_configs` section:
+- The following steps will set up Prometheus to run as a systemd service so that it is boot-persistent. First, move
+  binaries to system path:
+ ```bash
+ sudo mv ~/prometheus/{prometheus,promtool} /usr/local/bin/
+ ```
+- Next, create Prometheus user:
+ ```bash
+ sudo useradd --no-create-home --shell /bin/false prometheus
+ ```
+- Create config and data directories:
+ ```bash
+ sudo mkdir -p /etc/prometheus /var/lib/prometheus
+ ```
+- Copy the Prometheus config file to `etc`:
+ ```bash
+ sudo cp ~/prometheus/prometheus.yml /etc/prometheus/
+ ```
+- Set permissions:
+ ```bash
+ sudo chown -R prometheus:prometheus /etc/prometheus /var/lib/prometheus
+ ```
+- Create systemd unit file:
+ ```bash
+ sudo vim /etc/systemd/system/prometheus.service
+ ```
+- Add the following content:
+ ```ini
+ [Unit]
+ Description=Prometheus Monitoring
+ Wants=network-online.target
+ After=network-online.target
+ 
+ [Service]
+ User=prometheus
+ Group=prometheus
+ Type=simple
+ ExecStart=/usr/local/bin/prometheus \
+   --config.file=/etc/prometheus/prometheus.yml \
+   --storage.tsdb.path=/var/lib/prometheus/
+ 
+ [Install]
+ WantedBy=multi-user.target
+ ```
+- Reload systemd and start the new Prometheus service:
+ ```bash
+ sudo systemctl daemon-reexec
+ sudo systemctl daemon-reload
+ sudo systemctl enable --now prometheus
+ ```
+- Verify service is up:
+ ```bash
+ systemctl status prometheus
+ ```
+- In a desktop environment on a machine in your local network, use a web browser to check output. The service should be up on port 9090:
+ ```url
+ http://[PROMETHEUS_IP]:9090
+ ```
+- The following steps will add other machines as monitored nodes. Define each monitored node in the list of `targets` under the `scrape_configs` section. **Note**: each monitored node must be running the Prometheus node exporter, as installed in the previous section:
  ```yaml
  scrape_configs:
    - job_name: 'node_exporter_targets'
      static_configs:
        - targets: ['[DEV_IP]:9100']
  ```
-- Start Prometheus:
- ```bash
- ./prometheus --config.file=prometheus.yml
- ```
-- Access the UI at:
+- Back in a desktop environment, confirm that the newly added target is producing output:
  ```
  http://[PROMETHEUS_IP]:9090
  ```
