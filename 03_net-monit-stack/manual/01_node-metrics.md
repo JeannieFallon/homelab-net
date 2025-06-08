@@ -125,7 +125,71 @@ scrape_configs:
  ```
 - This node should remain online to scrape and store time-series metrics continuously.
 
-### 3. Install Grafana
+### 3. Configure firewall rules
+
+The following steps will use [`ufw` (Uncomplicated
+Firewall)](https://documentation.ubuntu.com/server/how-to/security/firewalls/index.html) to ensure that only the
+Prometheus node can access the target's broadcasted metrics. In addition, firewall rules will limit what other nodes on
+the local network can access the Prometheus node. This restriction prevents other LAN devices from accessing Prometheus
+data without explicit confirmation.
+
+#### Prometheus node
+
+- Install `ufw`:
+  ```bash
+  sudo apt install -y ufw
+  ```
+
+- Allow only your laptop to access Prometheus, and allow SSH:
+  ```bash
+  sudo ufw allow from 192.168.1.42 to any port 9090 proto tcp
+  ```
+  ```bash
+  sudo ufw allow OpenSSH
+  ```
+
+- Deny all other access to Prometheus. **Note**: you will need to use the preceding `ufw allow` command to allow any other nodes to access the Prometheus node.
+  ```bash
+  sudo ufw deny 9090
+  ```
+
+- Enable and verify:
+  ```bash
+  sudo ufw enable
+  ```
+  ```bash
+  sudo ufw status verbose
+  ```
+
+#### Monitored target node
+
+- Install `ufw`:
+  ```bash
+  sudo apt install -y ufw
+  ```
+
+- Allow only the Prometheus VM to access Node Exporter, and allow SSH:
+  ```bash
+  sudo ufw allow from 192.168.1.200 to any port 9100 proto tcp
+  ```
+  ```bash
+  sudo ufw allow OpenSSH
+  ```
+
+- Deny all other access to Node Exporter:
+  ```bash
+  sudo ufw deny 9100
+  ```
+
+- Enable and verify:
+  ```bash
+  sudo ufw enable
+  ```
+  ```bash
+  sudo ufw status verbose
+  ```
+
+### 4. Install Grafana
    - Install Grafana from official sources or APT (Debian has it in backports):
      ```bash
      sudo apt install -y grafana
@@ -137,7 +201,7 @@ scrape_configs:
      ```
    - Log in (default: admin/admin), add Prometheus as a data source, and import a basic Node Exporter dashboard from [Grafana Dashboards](https://grafana.com/grafana/dashboards).
 
-### 4. Install Netdata on each node
+### 5. Install Netdata on each node
    - Install Netdata:
      ```bash
      bash <(curl -Ss https://my-netdata.io/kickstart.sh)
@@ -148,7 +212,7 @@ scrape_configs:
      ```
    - Optionally expose metrics to Prometheus by enabling the Prometheus plugin in Netdata’s config.
 
-### 5. Verify Metrics Collection 
+### 6. Verify Metrics Collection
    - In Prometheus, confirm that all targets are listed and healthy at:  
      ```
      http://<prometheus-ip>:9090/targets
