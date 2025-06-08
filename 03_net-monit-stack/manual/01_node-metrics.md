@@ -133,6 +133,8 @@ Prometheus node can access the target's broadcasted metrics. In addition, firewa
 the local network can access the Prometheus node. This restriction prevents other LAN devices from accessing Prometheus
 data without explicit confirmation.
 
+**Note**: use static IPs or DHCP reservations. `ufw` rules can break if DHCP assigns different IPs to the nodes involved.
+
 #### Prometheus node
 
 - Install `ufw`:
@@ -140,17 +142,19 @@ data without explicit confirmation.
   sudo apt install -y ufw
   ```
 
-- Allow only your laptop to access Prometheus, and allow SSH:
-  ```bash
-  sudo ufw allow from 192.168.1.42 to any port 9090 proto tcp
-  ```
+- Allow SSH so you don't lock yourself out:
   ```bash
   sudo ufw allow OpenSSH
+  ```
+  
+- Allow only your desktop environment (e.g., laptop) to access Prometheus:
+  ```bash
+  sudo ufw allow proto tcp from [DESKTOP_IP] to any port 9090
   ```
 
 - Deny all other access to Prometheus. **Note**: you will need to use the preceding `ufw allow` command to allow any other nodes to access the Prometheus node.
   ```bash
-  sudo ufw deny 9090
+  sudo ufw deny proto tcp from any to any port 9090
   ```
 
 - Enable and verify:
@@ -168,12 +172,14 @@ data without explicit confirmation.
   sudo apt install -y ufw
   ```
 
-- Allow only the Prometheus VM to access Node Exporter, and allow SSH:
-  ```bash
-  sudo ufw allow from 192.168.1.200 to any port 9100 proto tcp
-  ```
+- Allow SSH so you don't lock yourself out:
   ```bash
   sudo ufw allow OpenSSH
+  ```
+
+- Allow only the Prometheus VM to access Node Exporter:
+  ```bash
+  sudo ufw allow from [PROMETHEUS_IP] to any port 9100 proto tcp
   ```
 
 - Deny all other access to Node Exporter:
