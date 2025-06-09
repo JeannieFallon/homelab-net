@@ -146,15 +146,20 @@ data without explicit confirmation.
   ```bash
   sudo ufw allow OpenSSH
   ```
-  
-- Allow only your desktop environment (e.g., laptop) to access Prometheus:
+
+- By default, deny all incoming traffic:
   ```bash
-  sudo ufw allow proto tcp from [DESKTOP_IP] to any port 9090
+  sudo ufw default deny incoming
   ```
 
-- Deny all other access to Prometheus. **Note**: you will need to use the preceding `ufw allow` command to allow any other nodes to access the Prometheus node.
+- By default, allow all outgoing traffic:
   ```bash
-  sudo ufw deny proto tcp from any to any port 9090
+  sudo ufw default allow outgoing
+  ```
+
+- Set an exception to allow incoming traffic from your desktop environment (e.g., laptop):
+  ```bash
+  sudo ufw allow from [DESKTOP_IP] to any port 9090 proto tcp
   ```
 
 - Enable and verify:
@@ -165,34 +170,42 @@ data without explicit confirmation.
   sudo ufw status verbose
   ```
 
+
 #### Monitored target node
 
-- Install `ufw`:
+- Install `ufw`:  
   ```bash
   sudo apt install -y ufw
   ```
 
-- Allow SSH so you don't lock yourself out:
+- By default, deny all incoming traffic:
+  ```bash
+  sudo ufw default deny incoming
+  ```
+
+- By default, allow all outgoing traffic:
+  ```bash
+  sudo ufw default allow outgoing
+  ```
+
+- Allow SSH so you don't lock yourself out:  
   ```bash
   sudo ufw allow OpenSSH
   ```
 
-- Allow only the Prometheus VM to access Node Exporter:
+- Allow Prometheus server to scrape node exporter on port 9100:
   ```bash
   sudo ufw allow from [PROMETHEUS_IP] to any port 9100 proto tcp
   ```
 
-- Deny all other access to Node Exporter:
-  ```bash
-  sudo ufw deny 9100
-  ```
-
-- Enable and verify:
+- Enable the firewall:
   ```bash
   sudo ufw enable
   ```
+
+- Verify status:
   ```bash
-  sudo ufw status verbose
+  sudo ufw status numbered
   ```
 
 ### 4. Install Grafana
