@@ -212,7 +212,7 @@ data without explicit confirmation.
   sudo ufw status numbered
   ```
 
-### 2. Install Grafana on dedicated VM
+### 4. Install Grafana on dedicated VM
 
 This VM will run a minimal graphical environment that boots directly into a fullscreen Grafana dashboard on your TV via HDMI.
 
@@ -305,19 +305,6 @@ This VM will run a minimal graphical environment that boots directly into a full
 - Reboot the VM  
 - Confirm that it automatically logs in and displays the Grafana dashboard in fullscreen kiosk mode  
 - Make sure the TV is receiving and displaying the output as expected
-
-
-### 4. Install Grafana
-   - Install Grafana from official sources or APT (Debian has it in backports):
-     ```bash
-     sudo apt install -y grafana
-     sudo systemctl enable --now grafana-server
-     ```
-   - Access Grafana at:
-     ```
-     http://<grafana-ip>:3000
-     ```
-   - Log in (default: admin/admin), add Prometheus as a data source, and import a basic Node Exporter dashboard from [Grafana Dashboards](https://grafana.com/grafana/dashboards).
 
 ### 5. Install Netdata on each node
    - Install Netdata:
