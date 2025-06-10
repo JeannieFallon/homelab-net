@@ -17,9 +17,10 @@ Prometheus server, and Grafana should display these metrics on a real-time dashb
       - Recommended resource allocation for Prometheus VM: 2 cores, 4 GB (4096 MiB) RAM, and 32 GB disk space
       - Use `prometheus` as the VM name and hostname for clarity
   - Create a third VM to host Grafana
-      - Recommended resource allocation for Prometheus VM: 2 cores, 2 GB (2048 MiB) RAM, and 16 GB disk space (thin provisioned)
+      - Recommended resource allocation for Grafana VM: 2 cores, 2 GB (2048 MiB) RAM, and 16 GB disk space (thin provisioned)
         - **Note**: set `Display: Default`
       - Use `grafana` as the VM name and hostname for clarity
+- Secondary monitor or TV connected via HDMI to the Intel NUC 
 
 ## Procedure
 
