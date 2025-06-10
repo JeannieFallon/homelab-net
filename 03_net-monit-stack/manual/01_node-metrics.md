@@ -8,14 +8,18 @@ Prometheus server, and Grafana should display these metrics on a real-time dashb
 
 ## Requirements
 
-- Two Debian-based nodes with SSH access
+- Three Debian-based nodes with SSH access
   - **Suggestion**: create VMs following the procedure outlined in [`02_ansible-control-node/01_create-debian-vm.md`](../../02_ansible-ctl-node/01_create-debian-vm.md)
   - Create a dev VM to serve as a monitored node
       - Recommended resource allocation for dev VM: 2 cores, 6 GB (6144 MiB) RAM, and 32 GB disk space
+      - User whatever hostname you prefer
   - Create a second VM to host Prometheus
       - Recommended resource allocation for Prometheus VM: 2 cores, 4 GB (4096 MiB) RAM, and 32 GB disk space
       - Use `prometheus` as the VM name and hostname for clarity
-- WAN access
+  - Create a third VM to host Grafana
+      - Recommended resource allocation for Prometheus VM: 2 cores, 2 GB (2048 MiB) RAM, and 16 GB disk space (thin provisioned)
+        - **Note**: set `Display: Default`
+      - Use `grafana` as the VM name and hostname for clarity
 
 ## Procedure
 
@@ -34,7 +38,7 @@ Prometheus server, and Grafana should display these metrics on a real-time dashb
  http://[DEV_IP]:9100/metrics
  ```
 
-### 2. Install Prometheus on a dedicated VM
+### 2. Install Prometheus on dedicated VM
 - SSH into the Prometheus VM.
 - Download and extract the latest Prometheus release:
  ```bash
@@ -170,7 +174,6 @@ data without explicit confirmation.
   sudo ufw status verbose
   ```
 
-
 #### Monitored target node
 
 - Install `ufw`:  
@@ -207,6 +210,101 @@ data without explicit confirmation.
   ```bash
   sudo ufw status numbered
   ```
+
+### 2. Install Grafana on dedicated VM
+
+This VM will run a minimal graphical environment that boots directly into a fullscreen Grafana dashboard on your TV via HDMI.
+
+#### Install Minimal Desktop Environment  
+
+- SSH into the Grafana VM.
+
+- Update the system:  
+  ```bash
+  sudo apt update && sudo apt upgrade -y
+  ```
+
+- Install a minimal desktop environment:  
+  ```bash
+  sudo apt install -y xorg openbox firefox-esr lightdm
+  ```
+
+- Hide the mouse cursor when idle:  
+  ```bash
+  sudo apt install -y unclutter
+  ```
+
+- Install Grafana:
+  ```bash
+  sudo apt install -y grafana
+  ```
+
+- Start service:
+  ```bash
+  sudo systemctl enable --now grafana-server
+  ```
+
+- Grafana should now be accessible at `http://localhost:3000` on a web browser inside the VM.
+
+#### Create a Dedicated Kiosk User
+- Add a new user:  
+  ```bash
+  sudo adduser kiosk-user
+  ```
+
+#### Enable Auto-login with LightDM
+- Edit the LightDM configuration:
+  ```bash
+  sudo vim /etc/lightdm/lightdm.conf
+  ```
+
+- Add the following lines:  
+  ```ini
+  [Seat:*]
+  autologin-user=kiosk-user
+  ```
+
+#### Configure auto-launch of kiosk browser
+
+- Switch to the `kiosk-user`:
+  ```bash
+  sudo su - kiosk-user
+  ```
+
+- Create openbox directory:
+  ```bash
+  mkdir -p /home/kiosk-user/.config/openbox
+  ```
+
+- Create autostart file:
+  ```bash
+  vim /home/kiosk-user/.config/openbox/autostart
+  ```
+
+- Add the following:
+  ```bash
+  unclutter &
+  firefox-esr --kiosk http://localhost:3000 &
+  ```
+
+#### Optional: Lock down networking  
+- Restrict `ufw` rules so only Prometheus can reach this VM  
+- Block inbound access to `3000` from the rest of the LAN  
+- Optionally allow your laptop's IP to access Grafana for configuration
+
+
+#### Display Output to TV  
+- Ensure your Proxmox host outputs video over HDMI  
+- This kiosk VM will boot into a full-screen Firefox window on login  
+- If no output appears:
+  - Check GPU passthrough settings (optional)
+    - Or use Proxmox’s console and mirror the display
+
+#### Test the Kiosk VM  
+- Reboot the VM  
+- Confirm that it automatically logs in and displays the Grafana dashboard in fullscreen kiosk mode  
+- Make sure the TV is receiving and displaying the output as expected
+
 
 ### 4. Install Grafana
    - Install Grafana from official sources or APT (Debian has it in backports):
