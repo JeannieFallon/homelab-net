@@ -17,9 +17,9 @@ Prometheus server, and Grafana should display these metrics on a real-time dashb
       - Recommended resource allocation for Prometheus VM: 2 cores, 4 GB (4096 MiB) RAM, and 32 GB disk space
       - Use `prometheus` as the VM name and hostname for clarity
   - Create a third VM to host Grafana
-      - Recommended resource allocation for Grafana VM: 2 cores, 2 GB (2048 MiB) RAM, and 16 GB disk space (thin provisioned)
-        - **Note**: set `Display: Default`
+      - Recommended resource allocation for Grafana VM: 2 cores, 4 GB (4096 MiB) RAM, and 32 GB disk space
       - Use `grafana` as the VM name and hostname for clarity
+      - During OS installation, select `LXQt` for a lightweight desktop environment
 - Secondary monitor or TV connected via HDMI to the Intel NUC 
 
 ## Procedure
@@ -138,7 +138,10 @@ Prometheus node can access the target's broadcasted metrics. In addition, firewa
 the local network can access the Prometheus node. This restriction prevents other LAN devices from accessing Prometheus
 data without explicit confirmation.
 
-**Note**: use static IPs or DHCP reservations. `ufw` rules can break if DHCP assigns different IPs to the nodes involved.
+**Note**:
+- Use static IPs or DHCP reservations. `ufw` rules can break if DHCP assigns different IPs to the nodes involved.
+- If trying to access the Prometheus dashboard from a desktop or laptop with both wireless and hardline network
+  interfaces, you may need to add a rule for both.
 
 #### Prometheus node
 
@@ -212,46 +215,49 @@ data without explicit confirmation.
   sudo ufw status numbered
   ```
 
-### 4. Install Grafana on dedicated VM
+### 4. Install Grafana on Dedicated VM
 
-This VM will run a minimal graphical environment that boots directly into a fullscreen Grafana dashboard on your TV via HDMI.
+This VM will run a graphical environment that boots directly into a fullscreen Grafana dashboard on your TV via HDMI.
 
-#### Install Minimal Desktop Environment  
+#### System Update
 
 - SSH into the Grafana VM.
 
-- Update the system:  
-  ```bash
-  sudo apt update && sudo apt upgrade -y
-  ```
+- Update the system:
 
-- Install a minimal desktop environment:  
-  ```bash
-  sudo apt install -y xorg openbox firefox-esr lightdm
-  ```
+    ```bash
+    sudo apt update && sudo apt upgrade -y
+    ```
 
-- Hide the mouse cursor when idle:  
-  ```bash
-  sudo apt install -y unclutter
-  ```
+- Hide the mouse cursor when idle:
+
+    ```bash
+    sudo apt install -y unclutter
+    ```
+
+#### Install Grafana
 
 - Install Grafana:
-  ```bash
-  sudo apt install -y grafana
-  ```
 
-- Start service:
-  ```bash
-  sudo systemctl enable --now grafana-server
-  ```
+    ```bash
+    sudo apt install -y grafana
+    ```
+
+- Enable and start the service:
+
+    ```bash
+    sudo systemctl enable --now grafana-server
+    ```
 
 - Grafana should now be accessible at `http://localhost:3000` on a web browser inside the VM.
 
 #### Create a Dedicated Kiosk User
-- Add a new user:  
-  ```bash
-  sudo adduser kiosk-user
-  ```
+
+- Add a new user:
+
+    ```bash
+    sudo adduser kiosk-user
+    ```
 
 #### Enable Auto-login with LightDM
 - Edit the LightDM configuration:
