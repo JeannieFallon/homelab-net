@@ -46,14 +46,11 @@ automate system configuration of other managed nodes.
     sudo apt install -y ansible
     ```
 
-7. Verify installation:
+7. You should now see the latest stable version of Ansible, installed system-wide.
 
     ```bash
-    ansible --version
+     dpkg -l | grep ansible
     ```
-
-8. You should now see the latest stable version of Ansible, installed system-wide.
-
 
 ## Resources
 
