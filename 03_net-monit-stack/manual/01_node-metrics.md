@@ -235,100 +235,74 @@ This VM will run a graphical environment that boots directly into a fullscreen G
     sudo apt install -y unclutter
     ```
 
-#### Install Grafana
+#### Add Grafana APT Repository
 
-- Install Grafana:
+- Install required dependencies:
 
     ```bash
-    sudo apt install -y grafana
+    sudo apt install -y apt-transport-https software-properties-common wget gnupg
     ```
 
-- Enable and start the service:
+- Add the Grafana GPG key:
+
+    ```bash
+    sudo mkdir -p /etc/apt/keyrings
+    ```
+    ```bash
+    wget -q -O - https://apt.grafana.com/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/grafana.gpg
+    ```
+
+- Add the Grafana APT repository:
+
+    ```bash
+    echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
+    ```
+
+- Update package index and install Grafana:
+
+    ```bash
+    sudo apt update && sudo apt install -y grafana
+    ```
+
+- Enable and start the Grafana service:
 
     ```bash
     sudo systemctl enable --now grafana-server
     ```
 
-- Grafana should now be accessible at `http://localhost:3000` on a web browser inside the VM.
+- Grafana will now be accessible at `http://localhost:3000` in the web browser inside the VM.
 
-#### Create a Dedicated Kiosk User
+### 5. Connect Grafana to Prometheus and Import Dashboard
 
-- Add a new user:
+After launching Grafana in a web browser at `http://localhost:3000`, log in with the default credentials (`admin` / `admin`) and follow the steps below:
 
-    ```bash
-    sudo adduser kiosk-user
-    ```
+#### Add Prometheus as a Data Source
 
-#### Enable Auto-login with LightDM
-- Edit the LightDM configuration:
-  ```bash
-  sudo vim /etc/lightdm/lightdm.conf
-  ```
+1. Open the left sidebar and click `Connections > Data Sources`.
+2. Click `Add data source`.
+3. Select `Prometheus`.
+4. Update the following settings:
+   - **Name**: `prometheus`
+   - **URL**: `http://[PROMETHEUS_IP]:9090`  
+5. Scroll down and click `Save & Test`.
+6. If successful, you will see `Data source is working`.
 
-- Add the following lines:  
-  ```ini
-  [Seat:*]
-  autologin-user=kiosk-user
-  ```
+**Note**: If connection fails, ensure the Prometheus node’s firewall allows inbound TCP traffic on port `9090` from the
+Grafana VM. See previous section for instructions on setting firewall rules to allow traffic from the Grafana node.
 
-#### Configure auto-launch of kiosk browser
+#### Import Node Exporter Dashboard
 
-- Switch to the `kiosk-user`:
-  ```bash
-  sudo su - kiosk-user
-  ```
+1. In the left sidebar, go to `Dashboards > Create Dashboard`.
+2. Click `Import dashboard`.
+3. When prompted, enter:
+   - **Name**: `node_metrics`
+   - **Description**: `display prom metrics`
+4. Enter **Dashboard ID** `1860` and click `Load`.
+5. Confirm `Node Exporter Full` is displayed.
+6. For **Prometheus data source**, select `prometheus` (added earlier).
+7. Click `Import`.
 
-- Create openbox directory:
-  ```bash
-  mkdir -p /home/kiosk-user/.config/openbox
-  ```
-
-- Create autostart file:
-  ```bash
-  vim /home/kiosk-user/.config/openbox/autostart
-  ```
-
-- Add the following:
-  ```bash
-  unclutter &
-  firefox-esr --kiosk http://localhost:3000 &
-  ```
-
-#### Optional: Lock down networking  
-- Restrict `ufw` rules so only Prometheus can reach this VM  
-- Block inbound access to `3000` from the rest of the LAN  
-- Optionally allow your laptop's IP to access Grafana for configuration
-
-
-#### Display Output to TV  
-- Ensure your Proxmox host outputs video over HDMI  
-- This kiosk VM will boot into a full-screen Firefox window on login  
-- If no output appears:
-  - Check GPU passthrough settings (optional)
-    - Or use Proxmox’s console and mirror the display
-
-#### Test the Kiosk VM  
-- Reboot the VM  
-- Confirm that it automatically logs in and displays the Grafana dashboard in fullscreen kiosk mode  
-- Make sure the TV is receiving and displaying the output as expected
-
-### 5. Install Netdata on each node
-   - Install Netdata:
-     ```bash
-     bash <(curl -Ss https://my-netdata.io/kickstart.sh)
-     ```
-   - Access the dashboard at:
-     ```
-     http://<node-ip>:19999
-     ```
-   - Optionally expose metrics to Prometheus by enabling the Prometheus plugin in Netdata’s config.
-
-### 6. Verify Metrics Collection
-   - In Prometheus, confirm that all targets are listed and healthy at:  
-     ```
-     http://<prometheus-ip>:9090/targets
-     ```
-   - In Grafana, ensure your dashboards reflect real-time data for all monitored nodes.
+You should now see a live Grafana dashboard visualizing node metrics from Prometheus.
 
 ## Resources
 
