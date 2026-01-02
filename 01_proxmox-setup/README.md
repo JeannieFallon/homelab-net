@@ -50,3 +50,86 @@ This procedure is divided into three logical stages based on the machine used:
 - [Mark Watt Tech: Home Assistant PROXMOX Install and Setup (With NUC Alternative)](https://youtu.be/PrKQkI53xys?si=JC_IZlWFhL1uaeTq)
 - [NetworkChuck: Virtual Machines Pt. 2 (Proxmox install w/ Kali Linux)](https://youtu.be/_u8qTN3cCnQ?si=UvFvcBShyHxs4Y3O)
 - [Proxmox VE Helper Scripts](https://community-scripts.github.io/ProxmoxVE/)
+
+## Common Proxmox CLI commands
+
+### Cluster Management
+```bash
+# Check cluster status
+pvecm status
+```
+
+### Virtual Machines (VMs)
+
+Use `qm`: Qemu manager.
+
+```bash
+# List all VMs
+qm list
+
+# Start a VM
+qm start <vmid>
+
+# Stop a VM
+qm stop <vmid>
+
+# Gracefully shutdown a VM
+qm shutdown <vmid>
+
+# Forcefully stop a VM
+qm stop <vmid> --force
+
+# Destroy a VM (this is irreversible)
+qm destroy <vmid> --purge
+```
+
+### Containers (LXC)
+
+Use `pct`: Proxmox Container Toolkit.
+
+```bash
+# List all containers
+pct list
+
+# Start a container
+pct start <vmid>
+
+# Stop a container
+pct stop <vmid>
+
+# Gracefully shutdown a container
+pct shutdown <vmid>
+
+# Destroy a container (this is irreversible)
+pct destroy <vmid> --purge
+```
+
+### Storage & Disk Management
+
+```bash
+# View storage status (LVM, ZFS, etc.)
+pvesm status
+
+# Scan for new ISOs or Disks
+pvesm scan lvm
+```
+
+### Network Verification
+
+```bash
+# Show the status of your bridges (crucial for VLAN 20 debugging)
+brctl show
+
+# View the Proxmox bridge and physical interface configuration
+cat /etc/network/interfaces
+```
+
+### System Health
+
+```bash
+# Check for failed systemd services (Proxmox-specific)
+systemctl --failed | grep pve
+
+# Real-time resource monitor for the NUC host
+pvestatd status
+```
