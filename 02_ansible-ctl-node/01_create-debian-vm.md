@@ -57,8 +57,8 @@ Create a virtual machine on the Proxmox host that will serve as the Ansible cont
          - Disk size: 32 GiB
          - Cache: `Default (no cache)`
          - Storage: Select your preferred storage pool
-         - Check the box for *SSD Emulation**
-         - Check the box for *Discard**
+         - Check the box for *SSD Emulation*
+         - Check the box for *Discard*
        - **CPU**
          - Socket: 1
          - Cores: 2
