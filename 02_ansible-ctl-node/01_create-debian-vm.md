@@ -73,7 +73,6 @@ Create a virtual machine on the Proxmox host that will serve as the Ansible cont
          - Model: `VirtIO (paravirtualized)`
          - MAC address: Leave default unless you need a reserved one
          - Uncheck box for *Firewall*
-         - Check the box for *QEMU Guest Agent*
        - **Confirm**
          - Review all settings
          - Click **Finish** to create the VM
