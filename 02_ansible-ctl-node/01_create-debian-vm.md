@@ -57,6 +57,8 @@ Create a virtual machine on the Proxmox host that will serve as the Ansible cont
          - Disk size: 32 GiB
          - Cache: `Default (no cache)`
          - Storage: Select your preferred storage pool
+         - Check the box for *SSD Emulation**
+         - Check the box for *Discard**
        - **CPU**
          - Socket: 1
          - Cores: 2
@@ -71,6 +73,7 @@ Create a virtual machine on the Proxmox host that will serve as the Ansible cont
          - Model: `VirtIO (paravirtualized)`
          - MAC address: Leave default unless you need a reserved one
          - Uncheck box for *Firewall*
+         - Check the box for *QEMU Guest Agent*
        - **Confirm**
          - Review all settings
          - Click **Finish** to create the VM
