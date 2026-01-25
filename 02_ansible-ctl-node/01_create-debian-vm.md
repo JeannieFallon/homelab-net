@@ -126,7 +126,7 @@ Create a virtual machine on the Proxmox host that will serve as the Ansible cont
       ```
     - Update packages and install common productivity tools:
       ```bash
-      apt update && apt upgrade && apt install -y sudo tmux vim btop tree
+      apt update && apt upgrade && apt install -y sudo rsync tmux vim btop tree
       ```
     - Install the QEMU guest agent:
         ```bash
