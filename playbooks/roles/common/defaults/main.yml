@@ -1,0 +1,10 @@
+---
+# defaults file for common
+user: default-user
+pkgs:
+  - sudo
+  - vim
+mgmt_net: 10.0.0.0/8
+# This is a placeholder path.
+# Override ssh_key_pub in group_vars/all.yml or host_vars.
+ssh_key_pub: "/dev/null"

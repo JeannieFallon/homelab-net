@@ -1,0 +1,4 @@
+[dev]
+# Update host definitions with each VM's IP address and the non-elevated user
+# Example: dev-vm ansible_host=192.168.1.100 ansible_user=alice
+[ALIAS] ansible_host=[TARGET_IP] ansible_user=[NON_ELEV_USER]

@@ -1,0 +1,82 @@
+---
+# tasks file for common
+
+- name: Update apt cache and upgrade all packages
+  ansible.builtin.apt:
+    update_cache: yes
+    upgrade: dist
+  become: true
+
+- name: Install common packages from pkgs list
+  ansible.builtin.apt:
+    name: "{{ pkgs }}"
+    state: present
+  become: true
+
+- name: Install monitoring and virtualization agents
+  ansible.builtin.apt:
+    name:
+      - qemu-guest-agent
+      - prometheus-node-exporter
+    state: present
+  become: true
+
+- name: Ensure user exists and is in the sudo group
+  ansible.builtin.user:
+    name: "{{ user }}"
+    groups: sudo
+    append: yes
+    shell: /bin/bash
+    state: present
+  become: true
+
+- name: Set up authorized keys for the user
+  ansible.posix.authorized_key:
+    user: "{{ user }}"
+    key: "{{ lookup('file', ssh_key_pub) }}"
+    state: present
+  become: true
+  when: ssh_key_pub != '/dev/null'
+
+- name: Configure UFW
+  block:
+    - name: Deny all incoming traffic by default
+      community.general.ufw:
+        direction: incoming
+        policy: deny
+
+    - name: Allow all outgoing traffic by default
+      community.general.ufw:
+        direction: outgoing
+        policy: allow
+
+    - name: Allow OpenSSH
+      community.general.ufw:
+        rule: allow
+        name: OpenSSH
+
+    - name: Allow traffic from management network
+      community.general.ufw:
+        rule: allow
+        src: "{{ mgmt_net }}"
+  become: true
+  notify: reload ufw
+
+- name: Enable UFW
+  community.general.ufw:
+    state: enabled
+  become: true
+
+- name: Ensure qemu-guest-agent is started and enabled
+  ansible.builtin.service:
+    name: qemu-guest-agent
+    state: started
+    enabled: yes
+  become: true
+
+- name: Ensure prometheus-node-exporter is started and enabled
+  ansible.builtin.service:
+    name: prometheus-node-exporter
+    state: started
+    enabled: yes
+  become: true
