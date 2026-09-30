@@ -12,7 +12,7 @@ Automate the installation and configuration of observability tools across your h
 - Inventory file with target hosts defined
 - SSH access from control node to all targets
 - Debian-based systems with internet access
-- Playbooks and roles located in `homelab-net/ansible/`
+- Playbooks and roles located in `homelab-net/playbooks/`
 
 ## Procedure
 
