@@ -1,3 +1,22 @@
+## Project
+
+Infrastructure-as-code for a home network and endpoint monitoring stack,
+built specification-first. Manual procedures are captured as markdown
+walkthroughs, then converted into Ansible roles that reproduce them.
+
+This repo is also a public portfolio piece demonstrating Linux platform
+engineering. Treat quality as a requirement: accurate procedures,
+idempotent roles, clean structure, and writing that holds up to review
+by an experienced engineer.
+
+Constraints:
+- Public repo. Never commit real hostnames, IPs, credentials, or topology.
+  Real inventory stays gitignored; commit placeholder examples only.
+- Procedures were written for Debian 12 around 2024. Treat version-specific
+  steps as possibly stale and flag them rather than assuming they're correct.
+- Fact-checking against docs is useful. It is not the same as verifying on
+  hardware. Say which one a claim rests on.
+
 ## Agent skills
 
 ### Issue tracker
