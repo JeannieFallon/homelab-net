@@ -4,7 +4,7 @@ This directory contains Ansible playbooks and configurations for setting up and 
 
 ## Directory Structure
 
--   `inventory/`: Contains your inventory files. You should create a `hosts` file here to define your servers.
+-   `inventory/`: Contains your inventory files. Copy `hosts.example` to `hosts` here to define your servers.
 -   `playbooks/`: Contains the Ansible playbooks.
 -   `roles/`: Contains reusable Ansible roles.
 -   `group_vars/`: Contains variables that can be used across playbooks.
@@ -12,7 +12,7 @@ This directory contains Ansible playbooks and configurations for setting up and 
 ## Prerequisites
 
 - Configure an [Ansible control node](https://github.com/JeannieFallon/homelab-net/tree/main/02_ansible-ctl-node).
-- Update the inventory hosts file at `inventory/hosts` and define your servers. Example:
+- Copy `inventory/hosts.example` to `inventory/hosts` (gitignored) and define your servers. Example:
 
 ```ini
 [dev]

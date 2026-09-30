@@ -16,9 +16,8 @@ vault.yml
 .env
 .env.*
 
-# Inventory or config examples
-inventory/hosts.yml        # real file, use a sanitized copy
-group_vars/all.yml         # real file, use example or encrypt
+# Real inventory (commit a sanitized hosts.example instead)
+playbooks/inventory/hosts
 
 # Logs / output / scratch
 logs/
