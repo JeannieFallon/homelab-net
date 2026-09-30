@@ -1,12 +1,15 @@
 # homelab-net
 
-Infrastructure-as-code for a home network and host monitoring stack, running on
-a single Proxmox VE hypervisor and configured from a dedicated Ansible control
-node.
+The infrastructure behind my home network, documented and automated. The goal
+is to see what every host on the network is doing (CPU, memory, disk, and
+network) from one set of dashboards.
 
-The project is built specification-first. Each procedure is first done by hand
-and written up as a markdown walkthrough. The walkthrough then becomes the spec
-for an Ansible role that reproduces the same result idempotently.
+Everything runs on a single Proxmox VE hypervisor and is configured from a
+dedicated Ansible control node. I run it the way I'd run production
+infrastructure. Each procedure is done by hand first and written up as a
+walkthrough. That walkthrough becomes the spec for an Ansible role that
+reproduces the result and is safe to rerun. When something breaks, it gets a
+post-mortem.
 
 ```mermaid
 flowchart LR
