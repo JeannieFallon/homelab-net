@@ -8,7 +8,7 @@ Automate the provisioning and configuration of observability tools using a centr
 
 ## How It Works
 
-The playbooks and roles used in this deployment live in the shared [`homelab-net/ansible/`](../../ansible/) directory.
+The playbooks and roles used in this deployment live in the shared [`homelab-net/playbooks/`](../../playbooks/) directory.
 This runbook provides high-level guidance on how to execute them and what order to follow.
 
 ## Prerequisites
