@@ -2,7 +2,7 @@
 
 **Date:** 2026-05-16
 
-**Component:** Debian 13 / Intel i915 Driver / Samsung Galaxy Book2 360 (NP730QED-KA1US) AMOLED Panel
+**Component:** Debian 13 / Intel i915 Driver / Laptop AMOLED Panel
 
 ## Symptom
 
@@ -21,7 +21,7 @@ The issue was a **phantom backlight interface** exposed by the i915 driver.
     no visible change on the OLED panel.
 *   **Underlying Cause:** Intel's i915 driver defaults to PWM-based backlight
     control, which works for traditional LCD panels but not for the DPCD
-    (DisplayPort Configuration Data) backlight control path used by Samsung's
+    (DisplayPort Configuration Data) backlight control path used by the laptop's
     AMOLED panel. The driver exposes the sysfs interface unconditionally, even
     when it isn't actually wired to a working hardware control path.
 

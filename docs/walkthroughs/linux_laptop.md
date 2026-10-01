@@ -17,7 +17,7 @@ Install Linux on an laptop. For the example below, we'll install Debian 13 on a 
 1. **Update existing OS and firmware**
     - If the laptop has an OS currently installed, perform all system updates before wiping. This ensures the BIOS/firmware gets the latest version, since vendor firmware updaters are typically Windows-only
     - On Windows: `Settings → Windows Update → Check for updates`, install all, reboot, repeat until no more updates appear
-    - Also run any vendor-specific updater (e.g., Samsung Update, Lenovo Vantage, Dell Command Update) — these surface firmware/driver updates not delivered via Windows Update
+    - Also run any vendor-specific updater (e.g., Lenovo Vantage, Dell Command Update, HP Support Assistant) — these surface firmware/driver updates not delivered via Windows Update
 
 2. **Verify BIOS is up to date**
     - For most modern consumer laptops, BIOS updates are delivered via the vendor's Windows updater, not from inside the BIOS menu itself
