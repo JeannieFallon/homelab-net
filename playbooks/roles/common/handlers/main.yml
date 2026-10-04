@@ -1,13 +1,5 @@
 ---
-# handlers file for common
-- name: reload ufw
-  ansible.builtin.command:
-    cmd: ufw reload
-  become: true
-  listen: "reload ufw"
-
-- name: restart node-exporter
-  ansible.builtin.service:
-    name: prometheus-node-exporter
-    state: restarted
-  become: true
+- name: Reload sshd
+  ansible.builtin.systemd_service:
+    name: ssh.service
+    state: reloaded

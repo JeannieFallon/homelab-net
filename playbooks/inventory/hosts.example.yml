@@ -7,6 +7,14 @@
 all:
   vars:
     ansible_user: ansible
+    # Subnets allowed to reach SSH and Grafana. Include the subnets of your
+    # workstation and the control node, or the first run locks them out.
+    lan_cidrs:
+      - 192.0.2.0/24
+    # Personal admin account: key login, password sudo. The password hash
+    # lives in group_vars/all/vault.yml.
+    admin_user: homelab-admin
+    admin_ssh_pubkey: "ssh-ed25519 AAAAC3...replace-me admin@workstation"
   children:
     control:
       hosts:

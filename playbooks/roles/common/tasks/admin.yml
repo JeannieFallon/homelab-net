@@ -1,0 +1,17 @@
+---
+# Interactive work goes through this account. Unlike `ansible`, its sudo asks
+# for a password (ADR 0006).
+- name: Create the personal admin user
+  ansible.builtin.user:
+    name: "{{ admin_user }}"
+    groups: sudo
+    append: true
+    shell: /bin/bash
+    password: "{{ admin_password_hash }}"
+    update_password: always
+  no_log: true
+
+- name: Authorize the workstation key for the personal admin
+  ansible.posix.authorized_key:
+    user: "{{ admin_user }}"
+    key: "{{ admin_ssh_pubkey }}"

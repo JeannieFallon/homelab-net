@@ -1,0 +1,26 @@
+---
+# Rules are added before ufw is enabled, so enabling it never cuts off SSH
+# from the LAN. There is no blanket "allow from the LAN" rule: each service
+# opens only its own port.
+- name: Deny incoming traffic by default
+  community.general.ufw:
+    direction: incoming
+    policy: deny
+
+- name: Allow outgoing traffic by default
+  community.general.ufw:
+    direction: outgoing
+    policy: allow
+
+- name: Allow SSH from each LAN subnet
+  community.general.ufw:
+    rule: allow
+    port: "22"
+    proto: tcp
+    src: "{{ item }}"
+    comment: ssh from lan_cidrs
+  loop: "{{ lan_cidrs }}"
+
+- name: Enable ufw
+  community.general.ufw:
+    state: enabled

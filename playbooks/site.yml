@@ -1,6 +1,6 @@
 ---
-- name: Apply common configuration to all hosts
+- name: Apply the baseline to every host
   hosts: all
-  become: yes
+  become: true
   roles:
     - common

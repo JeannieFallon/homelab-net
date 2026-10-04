@@ -1,0 +1,4 @@
+---
+# Secrets come from vault.yml beside this file (gitignored).
+# See vault.yml.example for the variables it must define.
+admin_password_hash: "{{ vault_admin_password_hash }}"
