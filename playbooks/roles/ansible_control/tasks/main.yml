@@ -1,0 +1,33 @@
+---
+- name: Install git and pipx
+  ansible.builtin.apt:
+    name:
+      - git
+      - pipx
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+# The tools, collections and key belong to the user that runs Ansible, so
+# these tasks don't escalate.
+- name: Install the pinned Ansible tools
+  community.general.pipx:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ ansible_control_tools }}"
+  environment:
+    # Same pins for dependencies, as in scripts/install-tools.sh
+    PIP_CONSTRAINT: "{{ ansible_control_tools_file }}"
+  become: false
+
+- name: Install the pinned collections
+  community.general.ansible_galaxy_install:
+    type: collection
+    requirements_file: "{{ ansible_control_collections_file }}"
+  become: false
+
+- name: Create the control node's SSH key pair if it's missing
+  ansible.builtin.command:
+    cmd: ssh-keygen -t ed25519 -N "" -C "ansible@{{ inventory_hostname }}" -f {{ ansible_control_ssh_key }}
+    creates: "{{ ansible_control_ssh_key }}"
+  become: false

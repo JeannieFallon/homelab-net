@@ -12,7 +12,8 @@ This directory contains Ansible playbooks and configurations for setting up and 
 
 ## Prerequisites
 
-- Configure an [Ansible control node](https://github.com/JeannieFallon/homelab-net/tree/main/02_ansible-ctl-node).
+- Build the control node with `scripts/bootstrap-control.sh`. The full order is in the
+  [`ansible_control` role README](roles/ansible_control/README.md#building-the-control-node).
 - Every target VM must meet the contract in [ADR 0003](../docs/adr/0003-roles-configure-existing-vms.md): Debian 13,
   reachable over SSH as `ansible` with key-only login, and passwordless sudo. VMs cloned from the cloud-init template
   meet it out of the box, with the control node's public key already installed.

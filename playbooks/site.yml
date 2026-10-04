@@ -4,3 +4,9 @@
   become: true
   roles:
     - common
+
+- name: Configure the control node
+  hosts: control
+  become: true
+  roles:
+    - ansible_control

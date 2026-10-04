@@ -15,12 +15,17 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
 
+      # Debian 13 ships Python 3.13
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        id: python
         with:
           python-version: "3.13"
 
+      # Same script the control node's bootstrap uses
       - name: Install pinned tools
-        run: pip install -r playbooks/requirements-tools.txt
+        run: scripts/install-tools.sh
+        env:
+          PIPX_DEFAULT_PYTHON: ${{ steps.python.outputs.python-path }}
 
       - name: Install pinned collections
         run: ansible-galaxy collection install -r playbooks/requirements.yml
