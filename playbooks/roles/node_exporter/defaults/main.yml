@@ -1,0 +1,7 @@
+---
+node_exporter_port: 9100
+
+# Addresses allowed to scrape node exporter: every host in the monitoring
+# group, by its inventory address.
+node_exporter_allowed_sources: >-
+  {{ groups['monitoring'] | default([]) | map('extract', hostvars, 'ansible_host') | list }}

@@ -1,9 +1,10 @@
 ---
-- name: Apply the baseline to every host
+- name: Apply the baseline and node exporter to every host
   hosts: all
   become: true
   roles:
     - common
+    - node_exporter
 
 - name: Configure the control node
   hosts: control

@@ -1,0 +1,24 @@
+---
+- name: Install node exporter
+  ansible.builtin.apt:
+    name: prometheus-node-exporter
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Start node exporter
+  ansible.builtin.systemd_service:
+    name: prometheus-node-exporter
+    state: started
+    enabled: true
+
+# Only the monitoring server may scrape. common has already set ufw to deny
+# incoming traffic by default.
+- name: Allow node exporter from the monitoring server
+  community.general.ufw:
+    rule: allow
+    port: "{{ node_exporter_port | string }}"
+    proto: tcp
+    src: "{{ item }}"
+    comment: node exporter from monitoring
+  loop: "{{ node_exporter_allowed_sources }}"
