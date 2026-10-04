@@ -1,0 +1,29 @@
+---
+# Read-only. Imported by verify.yml on the monitoring server.
+- name: Grafana is healthy
+  ansible.builtin.uri:
+    url: http://127.0.0.1:{{ grafana_http_port }}/api/health
+  register: grafana_verify_health
+  until: grafana_verify_health.status == 200
+  retries: 15
+  delay: 2
+
+- name: The Prometheus datasource passes its health check
+  ansible.builtin.uri:
+    url: http://127.0.0.1:{{ grafana_http_port }}/api/datasources/uid/{{ grafana_datasource_uid }}/health
+    user: admin
+    password: "{{ grafana_admin_password }}"
+    force_basic_auth: true
+  register: grafana_verify_datasource
+  failed_when: >-
+    grafana_verify_datasource.status != 200
+    or grafana_verify_datasource.json.status | default('') != 'OK'
+  no_log: true
+
+- name: The Node Exporter Full dashboard exists
+  ansible.builtin.uri:
+    url: http://127.0.0.1:{{ grafana_http_port }}/api/dashboards/uid/{{ grafana_dashboard_uid }}
+    user: admin
+    password: "{{ grafana_admin_password }}"
+    force_basic_auth: true
+  no_log: true

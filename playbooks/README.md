@@ -4,6 +4,10 @@ This directory contains Ansible playbooks and configurations for setting up and 
 
 ## Directory Structure
 
+-   `site.yml`: Configures every host, one play per inventory group, then runs `verify.yml`.
+-   `verify.yml`: Read-only checks of the monitoring chain and the firewall.
+-   `upgrade.yml`: Package upgrades, kept out of `site.yml`.
+
 -   `inventory/`: Contains your inventory files. Copy `hosts.example.yml` to `hosts.yml` here to define your servers.
 -   `roles/`: Contains reusable Ansible roles.
 -   `group_vars/`: Contains variables that can be used across playbooks.
@@ -93,10 +97,29 @@ ansible-playbook --syntax-check site.yml
 ```
 
 Run playbook (default config points to `inventory/hosts.yml`). The `ansible` account has passwordless sudo, so no
-password prompt is needed:
+sudo password is needed. The vault password is, either with `--ask-vault-pass` or from a file outside the repo:
 
 ```bash
-ansible-playbook site.yml
+ansible-playbook site.yml --vault-password-file ~/.vault_pass
+```
+
+`site.yml` has one play per group, then imports `verify.yml`: read-only checks that Prometheus is ready, every
+inventory host is `up`, Grafana's datasource is healthy, the dashboard exists, and, from the control node, that 9090
+and other hosts' 9100 are unreachable. `verify.yml` can also be run on its own.
+
+Package upgrades are kept out of `site.yml`, so its result doesn't depend on the Debian mirror. Run them separately:
+
+```bash
+ansible-playbook upgrade.yml --vault-password-file ~/.vault_pass
+```
+
+### Converge check
+
+`scripts/converge-check.sh` runs `site.yml` twice and fails unless the second run reports `changed=0` (and no failed
+or unreachable hosts) on every host. Arguments are passed to both runs:
+
+```bash
+../scripts/converge-check.sh --vault-password-file ~/.vault_pass
 ```
 
 ## Utility
