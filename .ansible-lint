@@ -1,0 +1,6 @@
+---
+profile: production
+exclude_paths:
+  - .github/
+  # Copy-paste starting point, not a playbook that runs
+  - res/templates/

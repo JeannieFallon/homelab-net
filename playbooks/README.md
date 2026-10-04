@@ -4,19 +4,35 @@ This directory contains Ansible playbooks and configurations for setting up and 
 
 ## Directory Structure
 
--   `inventory/`: Contains your inventory files. Copy `hosts.example` to `hosts` here to define your servers.
--   `playbooks/`: Contains the Ansible playbooks.
+-   `inventory/`: Contains your inventory files. Copy `hosts.example.yml` to `hosts.yml` here to define your servers.
 -   `roles/`: Contains reusable Ansible roles.
 -   `group_vars/`: Contains variables that can be used across playbooks.
+-   `requirements.yml`: Collections, pinned exactly.
+-   `requirements-tools.txt`: `ansible-core`, `ansible-lint` and `yamllint`, pinned exactly. CI installs the same versions.
 
 ## Prerequisites
 
 - Configure an [Ansible control node](https://github.com/JeannieFallon/homelab-net/tree/main/02_ansible-ctl-node).
-- Copy `inventory/hosts.example` to `inventory/hosts` (gitignored) and define your servers. Example:
+- Every target VM must meet the contract in [ADR 0003](../docs/adr/0003-roles-configure-existing-vms.md): Debian 13,
+  reachable over SSH as `ansible` with key-only login, and passwordless sudo. VMs cloned from the cloud-init template
+  meet it out of the box, with the control node's public key already installed.
+- Install the pinned collections:
 
-```ini
-[dev]
-dev-vm ansible_host=192.168.1.100 ansible_user=dev-user
+```bash
+ansible-galaxy collection install -r requirements.yml
+```
+
+- Copy `inventory/hosts.example.yml` to `inventory/hosts.yml` (gitignored) and define your servers. Example:
+
+```yaml
+all:
+  vars:
+    ansible_user: ansible
+  children:
+    workloads:
+      hosts:
+        dev-01:
+          ansible_host: 192.0.2.30
 ```
 
 - If needed, generate SSH keys on the Ansible control node. For use on a dedicated
@@ -31,45 +47,55 @@ ssh-keygen -t ed25519
 - Update SSH config with alias for your server. Example using server defined above:
 
 ```config
-Host dev-vm
-    HostName 192.168.1.100
-    User dev-user
+Host dev-01
+    HostName 192.0.2.30
+    User ansible
 
 # Keep defaults at end of config to allow for overriding
 Host *
     IdentityFile ~/.ssh/id_ed25519
+    # Accept a new host's key on first contact, and refuse a known host whose key changed
+    StrictHostKeyChecking accept-new
     ControlMaster auto
     ControlPath ~/.ssh/ansible-%r@%h:%p
     ControlPersist 60s
 ```
 
-- Copy your SSH key to the server for passwordless auth, using the new SSH alias:
+Ansible honors this setting: `ansible.cfg` no longer sets `host_key_checking = False`, so a VM answering with an
+unexpected key at a known address is refused instead of configured.
+
+### Rebuilt VMs
+
+A VM that is deliberately rebuilt (for example, re-cloned from the template at the same address) has a new host key,
+and SSH refuses it. After confirming the rebuild was intended, remove the old key so the next connection accepts the
+new one:
 
 ```bash
-ssh-copy-id dev-vm
+ssh-keygen -R dev-01
+ssh-keygen -R 192.0.2.30
 ```
 
 ## Running Playbooks
 
-Test connectivity with the hosts in your inventory. Enter the user's password when prompted:
+Test connectivity with the hosts in your inventory:
 
 ```bash
 ansible [HOSTS_GROUP] -m ping
 ```
 
-Syntax check with linter. **Note**: future work will add `ansible-lint` to the Ansible control node set-up:
+Lint and syntax check, the same checks CI runs (lint from the repo root):
 
 ```bash
-ansible-playbook site.yml --syntax-check
+yamllint --strict .
+ansible-lint
+ansible-playbook --syntax-check site.yml
 ```
 
-Run playbook (default config points to hosts file). **NOTE**: this command
-requires manually entering the target VM user's sudo password, as prompted by
-the `-K` flag. Future work will add a dedicated Ansible service accounts to
-target VMs with no password, an SSH key, and limited or specific sudo rights:
+Run playbook (default config points to `inventory/hosts.yml`). The `ansible` account has passwordless sudo, so no
+password prompt is needed:
 
 ```bash
-ansible-playbook site.yml -K
+ansible-playbook site.yml
 ```
 
 ## Utility

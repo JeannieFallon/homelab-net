@@ -12,12 +12,16 @@ Thumbs.db
 *.vault
 *.key
 secrets.yml
-vault.yml
 .env
 .env.*
 
-# Real inventory (commit a sanitized hosts.example instead)
+# Ansible Vault files (commit a vault.yml.example beside each instead)
+vault.yml
+playbooks/group_vars/*/vault.yml
+
+# Real inventory (commit a sanitized hosts.example.yml instead)
 playbooks/inventory/hosts
+playbooks/inventory/hosts.yml
 
 # Logs / output / scratch
 logs/

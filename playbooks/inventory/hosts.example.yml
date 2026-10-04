@@ -1,0 +1,24 @@
+---
+# Example inventory. Copy to hosts.yml (gitignored) and replace the
+# documentation addresses (192.0.2.0/24, RFC 5737) with your own.
+#
+# Each group is named for what its hosts do (see CONTEXT.md). Every host in
+# the inventory is a monitored host and becomes a Prometheus scrape target.
+all:
+  vars:
+    ansible_user: ansible
+  children:
+    control:
+      hosts:
+        ctl-01:
+          ansible_host: 192.0.2.10
+          # Plays for the control node run on the control node itself.
+          ansible_connection: local
+    monitoring:
+      hosts:
+        mon-01:
+          ansible_host: 192.0.2.20
+    workloads:
+      hosts:
+        dev-01:
+          ansible_host: 192.0.2.30
