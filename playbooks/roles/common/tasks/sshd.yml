@@ -1,0 +1,10 @@
+---
+- name: Install the sshd drop-in that turns off password login
+  ansible.builtin.template:
+    src: sshd-dropin.conf.j2
+    dest: "{{ common_sshd_dropin }}"
+    owner: root
+    group: root
+    mode: "0644"
+    validate: sshd -t -f %s
+  notify: Reload sshd

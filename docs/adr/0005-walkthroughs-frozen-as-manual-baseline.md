@@ -1,0 +1,5 @@
+# The Debian 12 walkthroughs are frozen; roles and ADRs are the source of truth
+
+The walkthroughs in `01_proxmox-setup/`, `02_ansible-ctl-node/`, `03_net-monit-stack/`, and `docs/walkthroughs/create_vm.md` record the lab as it was first built by hand on Debian 12, before LLM assistance. We keep them as written, each with a banner, and tag the last commit before Phase 1 as `manual-baseline-deb12`. From Phase 1 on, the Ansible roles, their READMEs, and these ADRs define how the lab is built. Where a role differs from a walkthrough, the role is correct, and its README's "Deviations from the walkthrough" section says how they differ.
+
+Updating the walkthroughs to match the roles would blur the record of what was done by hand and make the manual work impossible to verify against history. Keeping them unchanged without a banner would make them look like current instructions that the roles contradict. New manual procedures, such as the Debian 13 cloud-init template, get new walkthroughs rather than edits to the old ones.

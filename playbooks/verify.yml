@@ -1,0 +1,35 @@
+---
+# Read-only checks of the whole chain, from inventory through Prometheus to
+# Grafana, plus the firewall's intent. Imported at the end of site.yml, and
+# can be run on its own. Every task reports ok, never changed.
+#
+# The checks live in each role's verify*.yml, so they use the same defaults
+# and inventory overrides as the roles they check.
+
+- name: Verify the monitoring stack on the monitoring server
+  hosts: monitoring
+  gather_facts: false
+  tasks:
+    - name: Verify Prometheus
+      ansible.builtin.import_role:
+        name: prometheus
+        tasks_from: verify.yml
+
+    - name: Verify Grafana
+      ansible.builtin.import_role:
+        name: grafana
+        tasks_from: verify.yml
+
+- name: Verify the firewall from the control node
+  hosts: control
+  gather_facts: false
+  tasks:
+    - name: Verify Prometheus is closed to the LAN
+      ansible.builtin.import_role:
+        name: prometheus
+        tasks_from: verify_unreachable.yml
+
+    - name: Verify node exporter is closed to everything but the monitoring server
+      ansible.builtin.import_role:
+        name: node_exporter
+        tasks_from: verify_unreachable.yml

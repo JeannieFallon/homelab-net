@@ -1,0 +1,11 @@
+---
+# Read-only. Imported by verify.yml on the control node: Prometheus must not
+# be reachable from anywhere but its own host.
+- name: Prometheus is unreachable from here
+  ansible.builtin.wait_for:
+    host: "{{ hostvars[item]['ansible_host'] }}"
+    port: "{{ prometheus_listen_address.split(':')[-1] | int }}"
+    state: stopped
+    connect_timeout: 3
+    timeout: 10
+  loop: "{{ groups['monitoring'] }}"

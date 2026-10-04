@@ -1,0 +1,61 @@
+---
+# deb822_repository needs python3-debian on the target.
+- name: Install repo prerequisites
+  ansible.builtin.apt:
+    name: python3-debian
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Create the apt keyring directory
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Download the Grafana repo signing key
+  ansible.builtin.get_url:
+    url: "{{ grafana_apt_key_url }}"
+    dest: /etc/apt/keyrings/grafana.asc
+    checksum: "{{ grafana_apt_key_checksum }}"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Add the Grafana apt repo
+  ansible.builtin.deb822_repository:
+    name: grafana
+    uris: https://apt.grafana.com
+    suites: stable
+    components: main
+    signed_by: /etc/apt/keyrings/grafana.asc
+
+# A new repo needs a fresh cache before its packages can be installed. Checking
+# for the repo's package lists, rather than notifying a handler when the repo
+# is added, also covers a run that failed between adding it and refreshing.
+- name: Look for the Grafana repo's package lists
+  ansible.builtin.find:
+    paths: /var/lib/apt/lists
+    patterns: apt.grafana.com_*_Packages*
+  register: grafana_apt_lists
+
+- name: Refresh the apt cache for the new repo
+  ansible.builtin.apt:
+    update_cache: true
+  when: grafana_apt_lists.matched == 0
+
+# allow_change_held_packages lets a change to grafana_version go through.
+# The package doesn't start Grafana on install, so the config below is in
+# place before the first start creates the database.
+- name: Install Grafana at the pinned version
+  ansible.builtin.apt:
+    name: grafana={{ grafana_version }}
+    state: present
+    allow_change_held_packages: true
+
+- name: Hold Grafana at the pinned version
+  ansible.builtin.dpkg_selections:
+    name: grafana
+    selection: hold

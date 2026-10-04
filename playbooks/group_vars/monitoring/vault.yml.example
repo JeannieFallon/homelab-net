@@ -1,0 +1,6 @@
+---
+# Copy to vault.yml (gitignored) and encrypt it:
+#   ansible-vault encrypt group_vars/monitoring/vault.yml
+#
+# Password for Grafana's built-in admin user.
+vault_grafana_admin_password: "replace-me"

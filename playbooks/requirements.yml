@@ -1,0 +1,8 @@
+---
+# Collections, pinned exactly. Install with:
+#   ansible-galaxy collection install -r requirements.yml
+collections:
+  - name: community.general
+    version: "13.4.0"
+  - name: ansible.posix
+    version: "2.2.2"

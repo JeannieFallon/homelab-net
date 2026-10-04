@@ -1,0 +1,23 @@
+---
+# Read-only. Imported by verify.yml on the monitoring server.
+- name: Prometheus is ready
+  ansible.builtin.uri:
+    url: http://{{ prometheus_listen_address }}/-/ready
+  register: prometheus_ready
+  until: prometheus_ready.status == 200
+  retries: 15
+  delay: 2
+
+# Retries cover the first scrape after a fresh install.
+- name: Every inventory host is up in Prometheus
+  ansible.builtin.uri:
+    url: http://{{ prometheus_listen_address }}/api/v1/query?query={{ 'up{job="node"}' | urlencode }}
+  register: prometheus_up
+  vars:
+    prometheus_up_hosts: >-
+      {{ prometheus_up.json.data.result | default([])
+         | selectattr('value.1', 'eq', '1')
+         | map(attribute='metric.instance') | list }}
+  until: groups['all'] | difference(prometheus_up_hosts) | length == 0
+  retries: 10
+  delay: 6

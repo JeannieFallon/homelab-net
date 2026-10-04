@@ -1,0 +1,50 @@
+---
+name: lint
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      # Debian 13 ships Python 3.13 (from memory)
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        id: python
+        with:
+          python-version: "3.13"
+
+      # The runner image ships its own pipx-installed ansible-core and yamllint,
+      # with collections alongside. A fresh pipx home ignores them, so CI
+      # installs exactly what the bootstrap installs on the control node.
+      - name: Use a fresh pipx home
+        run: |
+          echo "PIPX_HOME=${RUNNER_TEMP}/pipx" >> "${GITHUB_ENV}"
+          echo "PIPX_BIN_DIR=${RUNNER_TEMP}/pipx/bin" >> "${GITHUB_ENV}"
+          echo "${RUNNER_TEMP}/pipx/bin" >> "${GITHUB_PATH}"
+
+      # Same script the control node's bootstrap uses
+      - name: Install pinned tools
+        run: scripts/install-tools.sh
+        env:
+          PIPX_DEFAULT_PYTHON: ${{ steps.python.outputs.python-path }}
+
+      - name: Install pinned collections
+        run: ansible-galaxy collection install -r playbooks/requirements.yml
+
+      - name: yamllint
+        run: yamllint --strict .
+
+      - name: ansible-lint
+        run: ansible-lint
+
+      - name: Syntax check
+        working-directory: playbooks
+        run: ansible-playbook -i inventory/hosts.example.yml --syntax-check site.yml

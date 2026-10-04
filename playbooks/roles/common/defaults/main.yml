@@ -1,10 +1,21 @@
 ---
-# defaults file for common
-user: default-user
-pkgs:
+# Baseline packages for every host. qemu-guest-agent is installed separately
+# because the role also manages its service.
+common_packages:
   - sudo
+  - tmux
   - vim
-mgmt_net: 10.0.0.0/8
-# This is a placeholder path.
-# Override ssh_key_pub in group_vars/all.yml or host_vars.
-ssh_key_pub: "/dev/null"
+  - rsync
+  - curl
+  - ufw
+  - btop
+  - tree
+
+# sshd uses the first value it reads for each keyword, and the Debian
+# sshd_config includes sshd_config.d/*.conf in lexical order. A name that
+# sorts before cloud-init's 50-cloud-init.conf wins. (From the sshd_config(5)
+# docs; not yet verified on hardware.)
+common_sshd_dropin: /etc/ssh/sshd_config.d/10-homelab.conf
+
+# How long a downloaded apt cache counts as fresh, in seconds.
+common_apt_cache_valid_time: 3600

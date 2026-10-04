@@ -1,0 +1,14 @@
+---
+# The pin files are read from the repo checkout. The control play runs on the
+# control node itself (ansible_connection: local), so these paths are valid
+# on the target too.
+ansible_control_tools_file: "{{ playbook_dir }}/requirements-tools.txt"
+ansible_control_collections_file: "{{ playbook_dir }}/requirements.yml"
+
+# Tool specs (name==version) from the pin file, comments and blank lines removed.
+ansible_control_tools: >-
+  {{ lookup('ansible.builtin.file', ansible_control_tools_file).splitlines()
+     | map('trim') | reject('match', '(#|$)') | list }}
+
+# Key the control node uses to reach every other VM as `ansible`.
+ansible_control_ssh_key: "{{ lookup('ansible.builtin.env', 'HOME') }}/.ssh/id_ed25519"

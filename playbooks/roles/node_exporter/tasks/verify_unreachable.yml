@@ -1,0 +1,13 @@
+---
+# Read-only. Imported by verify.yml on the control node: node exporter must be
+# reachable only from the monitoring server. The control node's own port is
+# skipped, because traffic to its own address goes over the loopback
+# interface, which ufw's default before.rules accept (from memory).
+- name: Node exporter is unreachable from here
+  ansible.builtin.wait_for:
+    host: "{{ hostvars[item]['ansible_host'] }}"
+    port: "{{ node_exporter_port }}"
+    state: stopped
+    connect_timeout: 3
+    timeout: 10
+  loop: "{{ groups['all'] | difference(groups['monitoring']) | difference([inventory_hostname]) }}"

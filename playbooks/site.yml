@@ -1,6 +1,23 @@
 ---
-- name: Apply common configuration to all hosts
+- name: Apply the baseline and node exporter to every host
   hosts: all
-  become: yes
+  become: true
   roles:
     - common
+    - node_exporter
+
+- name: Configure the control node
+  hosts: control
+  become: true
+  roles:
+    - ansible_control
+
+- name: Configure the monitoring server
+  hosts: monitoring
+  become: true
+  roles:
+    - prometheus
+    - grafana
+
+- name: Verify
+  ansible.builtin.import_playbook: verify.yml

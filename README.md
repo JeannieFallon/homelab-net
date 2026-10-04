@@ -11,6 +11,11 @@ walkthrough. That walkthrough becomes the spec for an Ansible role that
 reproduces the result and is safe to rerun. When something breaks, it gets a
 post-mortem.
 
+> **Note:** The walkthroughs record the original manual build on Debian 12 and
+> are kept as written. The Ansible roles now target Debian 13 and, with the
+> [ADRs](docs/adr/), are the source of truth. See [`ROADMAP.md`](ROADMAP.md)
+> for the plan.
+
 ```mermaid
 flowchart LR
     manual["Manual procedure<br/>(done by hand)"] --> walkthrough["Markdown walkthrough<br/>(the spec)"]
@@ -42,7 +47,7 @@ The numbered directories follow the order in which the lab is built.
 | [`01_proxmox-setup/`](01_proxmox-setup/) | Installing Proxmox VE on the bare-metal host and first access to the web UI |
 | [`02_ansible-ctl-node/`](02_ansible-ctl-node/) | Creating the Debian VM that serves as the Ansible control node |
 | [`03_net-monit-stack/`](03_net-monit-stack/) | Monitoring stack procedures, with `manual/` walkthroughs and an `automated/` runbook |
-| [`playbooks/`](playbooks/) | Ansible playbooks, roles, and a placeholder inventory (`inventory/hosts.example`) |
+| [`playbooks/`](playbooks/) | Ansible playbooks, roles, and a placeholder inventory (`inventory/hosts.example.yml`) |
 | [`scripts/`](scripts/) | Standalone utilities, such as a UPS/NUT power event report for the Proxmox host |
 | [`docs/`](docs/) | Knowledge base, standalone walkthroughs, and post-mortems |
 | [`res/`](res/) | Screenshots, config files, and templates |
@@ -76,8 +81,8 @@ automation. The service and system layers are outlines for now.
 
 See [`playbooks/README.md`](playbooks/README.md) for control node
 prerequisites, SSH setup, and how to run `site.yml`. The real inventory is
-gitignored. To use your own, copy `playbooks/inventory/hosts.example` to
-`playbooks/inventory/hosts` and fill it in.
+gitignored. To use your own, copy `playbooks/inventory/hosts.example.yml` to
+`playbooks/inventory/hosts.yml` and fill it in.
 
 ## License
 

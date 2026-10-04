@@ -14,6 +14,9 @@ Constraints:
   Real inventory stays gitignored; commit placeholder examples only.
 - Procedures were written for Debian 12 around 2024. Treat version-specific
   steps as possibly stale and flag them rather than assuming they're correct.
+- The Debian 12 walkthroughs are a frozen historical record. The Ansible
+  roles, their READMEs, and `docs/adr/` are the spec; don't edit walkthroughs
+  to match the roles.
 - Fact-checking against docs is useful. It is not the same as verifying on
   hardware. Say which one a claim rests on.
 

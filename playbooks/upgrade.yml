@@ -1,0 +1,12 @@
+---
+# Package upgrades, kept out of site.yml so that site.yml only enforces
+# configuration. Held packages (such as grafana) are not upgraded (apt docs).
+# This play does not reboot; check /var/run/reboot-required afterwards.
+- name: Upgrade packages on every host
+  hosts: all
+  become: true
+  tasks:
+    - name: Upgrade all packages
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist

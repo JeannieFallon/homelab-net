@@ -1,0 +1,34 @@
+---
+- name: Assert the host runs Debian 13
+  ansible.builtin.assert:
+    that:
+      - ansible_facts['distribution'] == 'Debian'
+      - ansible_facts['distribution_major_version'] == '13'
+    fail_msg: >-
+      common supports Debian 13 only (ADR 0004). This host runs
+      {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}.
+    quiet: true
+
+# No defaults for these: a wrong lan_cidrs locks SSH out once ufw is enabled.
+- name: Assert site variables are set in the inventory
+  ansible.builtin.assert:
+    that:
+      - lan_cidrs is defined
+      - lan_cidrs is sequence and lan_cidrs is not string
+      - lan_cidrs | length > 0
+      - admin_user is defined
+      - admin_ssh_pubkey is defined
+    fail_msg: >-
+      Set lan_cidrs (a list), admin_user and admin_ssh_pubkey in
+      inventory/hosts.yml. See inventory/hosts.example.yml.
+    quiet: true
+
+- name: Assert the admin password is a crypt hash, not plain text
+  ansible.builtin.assert:
+    that:
+      - admin_password_hash is match('^\$(6|y|5)\$')
+    fail_msg: >-
+      vault_admin_password_hash must be a SHA-512 or yescrypt hash.
+      See group_vars/all/vault.yml.example.
+    quiet: true
+  no_log: true

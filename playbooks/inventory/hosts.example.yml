@@ -1,0 +1,35 @@
+---
+# Example inventory. Copy to hosts.yml (gitignored) and replace the
+# documentation addresses (192.0.2.0/24, RFC 5737) with your own.
+#
+# ansible_host must be an IP address: it's used in ufw rules and as the
+# Prometheus scrape target.
+#
+# Each group is named for what its hosts do (see CONTEXT.md). Every host in
+# the inventory is a monitored host and becomes a Prometheus scrape target.
+all:
+  vars:
+    ansible_user: ansible
+    # Subnets allowed to reach SSH and Grafana. Include the subnets of your
+    # workstation and the control node, or the first run locks them out.
+    lan_cidrs:
+      - 192.0.2.0/24
+    # Personal admin account: key login, password sudo. The password hash
+    # lives in group_vars/all/vault.yml.
+    admin_user: homelab-admin
+    admin_ssh_pubkey: "ssh-ed25519 AAAAC3...replace-me admin@workstation"
+  children:
+    control:
+      hosts:
+        ctl-01:
+          ansible_host: 192.0.2.10
+          # Plays for the control node run on the control node itself.
+          ansible_connection: local
+    monitoring:
+      hosts:
+        mon-01:
+          ansible_host: 192.0.2.20
+    workloads:
+      hosts:
+        dev-01:
+          ansible_host: 192.0.2.30

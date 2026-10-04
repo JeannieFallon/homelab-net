@@ -1,0 +1,5 @@
+# Roles configure existing VMs; VMs come from a cloud-init template
+
+The Ansible roles never create VMs. Each role assumes a VM that already exists and meets one contract: Debian 13, reachable over SSH as the `ansible` user with key-only login, and passwordless sudo for that user. VMs are full clones of a Debian 13 cloud-init template built by hand on the Proxmox host from the official `genericcloud` image, following a walkthrough. Cloud-init sets the `ansible` user, its SSH keys, and a static IP outside the router's DHCP pool. The template's NIC carries no VLAN tag, because the router port already assigns untagged traffic to the VLAN (see [the VLAN post-mortem](../post-mortem/20260102_vlan-tags.md)).
+
+We considered provisioning VMs as code with OpenTofu and the `bpg/proxmox` provider, and deferred it. Cloning a template takes a few minutes by hand, and Phase 1's goal is reproducible configuration, not reproducible provisioning. Because the roles depend only on the contract above, OpenTofu can be added later without changing any role.
