@@ -14,6 +14,10 @@ _Avoid_: node, server, NUC (except when describing the hardware itself)
 The VM that runs Ansible and applies playbooks to every other VM.
 _Avoid_: Ansible node, ansible-ctl node, controller
 
+**Workload VM**:
+A VM whose job is something other than running Ansible or the monitoring stack, such as a dev VM or a future service.
+_Avoid_: dev VM (except for one specific VM), target, managed node
+
 ### Monitoring
 
 **Monitored host**:
@@ -27,3 +31,15 @@ _Avoid_: Prometheus node, Prometheus VM, Grafana VM, Prometheus server
 **Host metrics**:
 Resource usage of a monitored host: CPU, memory, disk, and network.
 _Avoid_: endpoint monitoring, node metrics (except as the walkthrough's title)
+
+## Inventory groups
+
+Each Ansible inventory group is named for what its hosts do, and maps to one glossary term:
+
+| Group | Glossary term |
+| --- | --- |
+| `control` | control node |
+| `monitoring` | monitoring server |
+| `workloads` | workload VM |
+
+Every host in the inventory, whatever its group, is a **monitored host**.

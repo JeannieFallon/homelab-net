@@ -1,5 +1,7 @@
 # Create Proxmox ISO
 
+> **Historical manual procedure.** This walkthrough records how the lab was first built by hand on Debian 12 and is kept as written. The Proxmox host is still set up by hand; the Ansible roles configure only the VMs, which now run Debian 13. [ADR 0005](../docs/adr/0005-walkthroughs-frozen-as-manual-baseline.md) explains why the walkthroughs are kept unchanged.
+
 ## Goal
 Download the latest Proxmox ISO and flash it to a USB drive using a Windows laptop. This USB drive will be used to install Proxmox on the Intel NUC.
 

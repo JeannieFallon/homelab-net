@@ -11,6 +11,11 @@ walkthrough. That walkthrough becomes the spec for an Ansible role that
 reproduces the result and is safe to rerun. When something breaks, it gets a
 post-mortem.
 
+> **Note:** The walkthroughs record the original manual build on Debian 12 and
+> are kept as written. The Ansible roles now target Debian 13 and, with the
+> [ADRs](docs/adr/), are the source of truth. See [`ROADMAP.md`](ROADMAP.md)
+> for the plan.
+
 ```mermaid
 flowchart LR
     manual["Manual procedure<br/>(done by hand)"] --> walkthrough["Markdown walkthrough<br/>(the spec)"]

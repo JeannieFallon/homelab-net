@@ -1,5 +1,7 @@
 # Install Proxmox on Intel NUC
 
+> **Historical manual procedure.** This walkthrough records how the lab was first built by hand on Debian 12 and is kept as written. The Proxmox host is still set up by hand; the Ansible roles configure only the VMs, which now run Debian 13. [ADR 0005](../docs/adr/0005-walkthroughs-frozen-as-manual-baseline.md) explains why the walkthroughs are kept unchanged.
+
 ## Goal
 Boot the Intel NUC from the prepared USB installer, configure BIOS settings if needed, and install Proxmox VE onto the
 internal drive.

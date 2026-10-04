@@ -1,0 +1,5 @@
+# Testing is lint in CI plus a converge check on the Proxmox host; Molecule is deferred
+
+Every pull request runs `ansible-lint` (production profile), `yamllint`, and `ansible-playbook --syntax-check site.yml` in CI, which needs no hardware. Behavior is tested on the Proxmox host against throwaway clones of the cloud-init template, with snapshots for rollback. `site.yml` ends with a read-only verification play that checks the chain from inventory through Prometheus to Grafana, including that ports meant to be closed are closed. `scripts/converge-check.sh` runs `site.yml` twice and fails unless the second run reports `changed=0`.
+
+Molecule with container drivers was the obvious alternative, and we deferred it. The roles manage ufw, systemd services, sshd, and `qemu-guest-agent`, all of which either fail in containers or need privileged containers that no longer resemble a VM, so a passing Molecule run would prove little about the real hosts. Molecule with a VM driver would work but duplicates what the template clones already give us. The cost is that behavioral tests need the NUC and can't run in CI.

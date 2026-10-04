@@ -1,5 +1,7 @@
 # Install Ansible on Control Node
 
+> **Historical manual procedure.** This walkthrough records how the lab was first built by hand on Debian 12 and is kept as written. The [Ansible roles](../playbooks/roles/) target Debian 13 and are now the source of truth. Each role's README lists how it deviates from this walkthrough, and [ADR 0005](../docs/adr/0005-walkthroughs-frozen-as-manual-baseline.md) explains why the walkthroughs are kept unchanged.
+
 ## Goal
 
 Install the latest stable version of Ansible system-wide on the `ansible-ctl` node using the Ubuntu PPA, as recommended
