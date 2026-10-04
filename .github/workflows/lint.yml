@@ -21,6 +21,15 @@ jobs:
         with:
           python-version: "3.13"
 
+      # The runner image ships its own pipx-installed ansible-core and yamllint,
+      # with collections alongside. A fresh pipx home ignores them, so CI
+      # installs exactly what the bootstrap installs on the control node.
+      - name: Use a fresh pipx home
+        run: |
+          echo "PIPX_HOME=${RUNNER_TEMP}/pipx" >> "${GITHUB_ENV}"
+          echo "PIPX_BIN_DIR=${RUNNER_TEMP}/pipx/bin" >> "${GITHUB_ENV}"
+          echo "${RUNNER_TEMP}/pipx/bin" >> "${GITHUB_PATH}"
+
       # Same script the control node's bootstrap uses
       - name: Install pinned tools
         run: scripts/install-tools.sh
