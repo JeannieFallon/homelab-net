@@ -31,11 +31,20 @@
     suites: stable
     components: main
     signed_by: /etc/apt/keyrings/grafana.asc
-  notify: Update apt cache
 
-# A new repo needs a fresh cache before its packages can be installed.
-- name: Refresh the apt cache if the repo changed
-  ansible.builtin.meta: flush_handlers
+# A new repo needs a fresh cache before its packages can be installed. Checking
+# for the repo's package lists, rather than notifying a handler when the repo
+# is added, also covers a run that failed between adding it and refreshing.
+- name: Look for the Grafana repo's package lists
+  ansible.builtin.find:
+    paths: /var/lib/apt/lists
+    patterns: apt.grafana.com_*_Packages*
+  register: grafana_apt_lists
+
+- name: Refresh the apt cache for the new repo
+  ansible.builtin.apt:
+    update_cache: true
+  when: grafana_apt_lists.matched == 0
 
 # allow_change_held_packages lets a change to grafana_version go through.
 # The package doesn't start Grafana on install, so the config below is in

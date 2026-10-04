@@ -2,6 +2,9 @@
 # Example inventory. Copy to hosts.yml (gitignored) and replace the
 # documentation addresses (192.0.2.0/24, RFC 5737) with your own.
 #
+# ansible_host must be an IP address: it's used in ufw rules and as the
+# Prometheus scrape target.
+#
 # Each group is named for what its hosts do (see CONTEXT.md). Every host in
 # the inventory is a monitored host and becomes a Prometheus scrape target.
 all:

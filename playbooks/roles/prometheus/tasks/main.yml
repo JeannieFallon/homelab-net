@@ -1,6 +1,7 @@
 ---
 # The package starts Prometheus on all interfaces with its own config until the
-# tasks below take effect. ufw has no rule for 9090, so it isn't reachable.
+# tasks below take effect (from memory). ufw has no rule for 9090, so it isn't
+# reachable either way.
 - name: Install Prometheus
   ansible.builtin.apt:
     name: prometheus

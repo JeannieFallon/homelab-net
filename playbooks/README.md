@@ -18,7 +18,7 @@ This directory contains Ansible playbooks and configurations for setting up and 
 
 - Build the control node with `scripts/bootstrap-control.sh`. The full order is in the
   [`ansible_control` role README](roles/ansible_control/README.md#building-the-control-node).
-- Every target VM must meet the contract in [ADR 0003](../docs/adr/0003-roles-configure-existing-vms.md): Debian 13,
+- Every VM must meet the contract in [ADR 0003](../docs/adr/0003-roles-configure-existing-vms.md): Debian 13,
   reachable over SSH as `ansible` with key-only login, and passwordless sudo. VMs cloned from the cloud-init template
   meet it out of the box, with the control node's public key already installed.
 - Install the pinned collections:
@@ -40,16 +40,9 @@ all:
           ansible_host: 192.0.2.30
 ```
 
-- If needed, generate SSH keys on the Ansible control node. For use on a dedicated
-Ansible control node, a default key is acceptable. For use on a multi-purpose
-node, consider creating a bespoke key for Ansible use only (must update Ansible
-config to use bespoke key):
+- The control node's SSH key (`~/.ssh/id_ed25519`) is created by the `ansible_control` role during the bootstrap.
 
-```bash
-ssh-keygen -t ed25519
-```
-
-- Update SSH config with alias for your server. Example using server defined above:
+- Optionally, add an SSH config alias for each VM. Example using the VM defined above:
 
 ```config
 Host dev-01
@@ -66,8 +59,9 @@ Host *
     ControlPersist 60s
 ```
 
-Ansible honors this setting: `ansible.cfg` no longer sets `host_key_checking = False`, so a VM answering with an
-unexpected key at a known address is refused instead of configured.
+`ansible.cfg` sets the same `StrictHostKeyChecking accept-new` in its `ssh_args`, so Ansible behaves this way even
+without the SSH config, and it no longer sets `host_key_checking = False`. A VM answering with an unexpected key at a
+known address is refused instead of configured.
 
 ### Rebuilt VMs
 

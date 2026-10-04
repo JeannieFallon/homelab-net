@@ -1,8 +1,4 @@
 ---
-- name: Update apt cache
-  ansible.builtin.apt:
-    update_cache: true
-
 - name: Restart grafana
   ansible.builtin.systemd_service:
     name: grafana-server
