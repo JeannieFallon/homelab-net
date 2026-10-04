@@ -1,0 +1,29 @@
+---
+- name: Assert the admin password is set
+  ansible.builtin.assert:
+    that:
+      - grafana_admin_password is defined
+      - grafana_admin_password | length > 0
+    fail_msg: >-
+      Set vault_grafana_admin_password in group_vars/monitoring/vault.yml.
+      See vault.yml.example.
+    quiet: true
+  no_log: true
+
+- name: Install the package
+  ansible.builtin.import_tasks: install.yml
+
+- name: Configure Grafana
+  ansible.builtin.import_tasks: configure.yml
+
+- name: Set the admin password
+  ansible.builtin.import_tasks: admin.yml
+
+- name: Allow Grafana from each LAN subnet
+  community.general.ufw:
+    rule: allow
+    port: "{{ grafana_http_port | string }}"
+    proto: tcp
+    src: "{{ item }}"
+    comment: grafana from lan_cidrs
+  loop: "{{ lan_cidrs }}"

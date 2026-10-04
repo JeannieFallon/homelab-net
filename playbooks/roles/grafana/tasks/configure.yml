@@ -1,0 +1,79 @@
+---
+- name: Set grafana.ini options
+  community.general.ini_file:
+    path: /etc/grafana/grafana.ini
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+    owner: root
+    group: grafana
+    mode: "0640"
+  loop:
+    - { section: server, option: http_port, value: "{{ grafana_http_port }}" }
+    - { section: auth.anonymous, option: enabled, value: "false" }
+    - { section: users, option: allow_sign_up, value: "false" }
+    # The version is pinned, so update checks and usage reporting only add noise.
+    - { section: analytics, option: reporting_enabled, value: "false" }
+    - { section: analytics, option: check_for_updates, value: "false" }
+  loop_control:
+    label: "{{ item.section }}.{{ item.option }}"
+  notify: Restart grafana
+
+# admin_password only takes effect when Grafana first creates its database.
+# admin.yml handles changes after that. Triple quotes let the password
+# contain ; and #, which otherwise start a comment.
+- name: Set the initial admin password in grafana.ini
+  community.general.ini_file:
+    path: /etc/grafana/grafana.ini
+    section: security
+    option: admin_password
+    value: '"""{{ grafana_admin_password }}"""'
+    owner: root
+    group: grafana
+    mode: "0640"
+  no_log: true
+  notify: Restart grafana
+
+- name: Provision the Prometheus datasource
+  ansible.builtin.template:
+    src: datasource.yml.j2
+    dest: /etc/grafana/provisioning/datasources/prometheus.yml
+    owner: root
+    group: grafana
+    mode: "0640"
+  notify: Restart grafana
+
+- name: Provision the dashboard provider
+  ansible.builtin.template:
+    src: dashboards.yml.j2
+    dest: /etc/grafana/provisioning/dashboards/homelab.yml
+    owner: root
+    group: grafana
+    mode: "0640"
+  notify: Restart grafana
+
+- name: Create the dashboard directory
+  ansible.builtin.file:
+    path: "{{ grafana_dashboard_dir }}"
+    state: directory
+    owner: root
+    group: grafana
+    mode: "0750"
+
+# Revision 45 selects its datasource through a dashboard variable
+# (ds_prometheus) and has no ${DS_PROMETHEUS} import placeholder, so it's
+# provisioned unmodified and picks up the default datasource.
+- name: Download the Node Exporter Full dashboard
+  ansible.builtin.get_url:
+    url: "{{ grafana_dashboard_url }}"
+    dest: "{{ grafana_dashboard_dir }}/node-exporter-full.json"
+    checksum: "{{ grafana_dashboard_checksum }}"
+    owner: root
+    group: grafana
+    mode: "0640"
+
+- name: Start Grafana
+  ansible.builtin.systemd_service:
+    name: grafana-server
+    state: started
+    enabled: true

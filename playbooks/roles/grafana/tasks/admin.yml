@@ -1,0 +1,39 @@
+---
+# Apply pending restarts before talking to the API.
+- name: Restart Grafana if its config changed
+  ansible.builtin.meta: flush_handlers
+
+- name: Wait for Grafana to answer
+  ansible.builtin.uri:
+    url: http://127.0.0.1:{{ grafana_http_port }}/api/health
+  register: grafana_health
+  until: grafana_health.status == 200
+  retries: 30
+  delay: 2
+
+# On a fresh install the password from grafana.ini already works and nothing
+# changes. If the vault password was changed later, the login fails and the
+# CLI resets it, which is the only time this file reports a change.
+- name: Check the admin password
+  ansible.builtin.uri:
+    url: http://127.0.0.1:{{ grafana_http_port }}/api/user
+    user: admin
+    password: "{{ grafana_admin_password }}"
+    force_basic_auth: true
+    status_code: [200, 401]
+  register: grafana_admin_login
+  no_log: true
+
+- name: Reset the admin password to the vault value
+  ansible.builtin.command:
+    argv:
+      - grafana
+      - cli
+      - --homepath=/usr/share/grafana
+      - --config=/etc/grafana/grafana.ini
+      - admin
+      - reset-admin-password
+      - "{{ grafana_admin_password }}"
+  when: grafana_admin_login.status == 401
+  changed_when: true
+  no_log: true

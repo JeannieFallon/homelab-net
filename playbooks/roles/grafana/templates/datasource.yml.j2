@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+apiVersion: 1
+datasources:
+  - name: Prometheus
+    type: prometheus
+    uid: {{ grafana_datasource_uid }}
+    access: proxy
+    url: {{ grafana_datasource_url }}
+    isDefault: true
+    editable: false

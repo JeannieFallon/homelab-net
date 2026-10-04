@@ -1,0 +1,27 @@
+---
+# Exact package version, held with dpkg so `apt upgrade` can't change it.
+# 13.2.3 was the newest in apt.grafana.com stable on 2026-10-04.
+grafana_version: "13.2.3"
+
+# Grafana's current repo signing key (fingerprint B53A E77B ADB6 30A6 8304
+# 6005 963F A277 1045 8545, expires 2027-08-22), pinned by checksum. A
+# checksum failure means Grafana rotated the key; check the new fingerprint
+# before updating this.
+grafana_apt_key_url: https://apt.grafana.com/gpg.key
+grafana_apt_key_checksum: sha256:3d4029689bc7e4444ec00abafa07f21e9c812b41f1123ab5bbe6f8c3e3f7ff8c
+
+grafana_http_port: 3000
+
+# Prometheus runs on the same VM and listens on localhost only (ADR 0001).
+grafana_datasource_uid: prometheus
+grafana_datasource_url: http://127.0.0.1:9090
+
+# Node Exporter Full (grafana.com dashboard 1860), pinned to one revision.
+grafana_dashboard_id: 1860
+grafana_dashboard_revision: 45
+grafana_dashboard_url: >-
+  https://grafana.com/api/dashboards/{{ grafana_dashboard_id }}/revisions/{{ grafana_dashboard_revision }}/download
+grafana_dashboard_checksum: sha256:184c6b7409f306da75525d7772f71945b10cea23ad16b5d78c4698ea0ea51986
+# The uid inside the dashboard JSON, used by the verification play.
+grafana_dashboard_uid: rYdddlPWk
+grafana_dashboard_dir: /var/lib/grafana/dashboards
