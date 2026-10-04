@@ -11,3 +11,9 @@
   become: true
   roles:
     - ansible_control
+
+- name: Configure the monitoring server
+  hosts: monitoring
+  become: true
+  roles:
+    - prometheus

@@ -1,0 +1,11 @@
+---
+# Changing the flags needs a restart; a config change only needs a reload.
+- name: Restart prometheus
+  ansible.builtin.systemd_service:
+    name: prometheus
+    state: restarted
+
+- name: Reload prometheus
+  ansible.builtin.systemd_service:
+    name: prometheus
+    state: reloaded

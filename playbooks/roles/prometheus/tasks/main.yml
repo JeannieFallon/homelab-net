@@ -1,0 +1,32 @@
+---
+# The package starts Prometheus on all interfaces with its own config until the
+# tasks below take effect. ufw has no rule for 9090, so it isn't reachable.
+- name: Install Prometheus
+  ansible.builtin.apt:
+    name: prometheus
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Set the Prometheus flags
+  ansible.builtin.lineinfile:
+    path: /etc/default/prometheus
+    regexp: ^ARGS=
+    line: ARGS="{{ prometheus_args | join(' ') }}"
+  notify: Restart prometheus
+
+- name: Write the scrape config
+  ansible.builtin.template:
+    src: prometheus.yml.j2
+    dest: /etc/prometheus/prometheus.yml
+    owner: root
+    group: root
+    mode: "0644"
+    validate: promtool check config %s
+  notify: Reload prometheus
+
+- name: Start Prometheus
+  ansible.builtin.systemd_service:
+    name: prometheus
+    state: started
+    enabled: true

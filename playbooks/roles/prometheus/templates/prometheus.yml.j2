@@ -1,0 +1,19 @@
+# {{ ansible_managed }}
+global:
+  scrape_interval: {{ prometheus_scrape_interval }}
+  evaluation_interval: {{ prometheus_scrape_interval }}
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ["{{ prometheus_listen_address }}"]
+
+  # One target per inventory host. The instance label is the inventory name,
+  # so dashboards and queries show hostnames instead of IP:port.
+  - job_name: node
+    static_configs:
+{% for host in groups['all'] | sort %}
+      - targets: ["{{ hostvars[host]['ansible_host'] }}:{{ prometheus_node_exporter_port }}"]
+        labels:
+          instance: {{ host }}
+{% endfor %}

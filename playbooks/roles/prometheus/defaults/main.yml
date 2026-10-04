@@ -1,0 +1,14 @@
+---
+# Localhost only: the Prometheus API has no authentication, and Grafana runs
+# on the same VM (ADR 0001).
+prometheus_listen_address: 127.0.0.1:9090
+
+# Flags written to ARGS in /etc/default/prometheus, which the Debian unit
+# passes to the daemon. Retention stays at the package default.
+prometheus_args:
+  - --web.listen-address={{ prometheus_listen_address }}
+
+prometheus_scrape_interval: 15s
+
+# Port node exporter listens on, on every host in the inventory.
+prometheus_node_exporter_port: 9100
