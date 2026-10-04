@@ -4,3 +4,6 @@ exclude_paths:
   - .github/
   # Copy-paste starting point, not a playbook that runs
   - res/templates/
+# Files under playbooks/ are otherwise all treated as playbooks
+kinds:
+  - requirements: "**/requirements.yml"
